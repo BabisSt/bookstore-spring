@@ -1,9 +1,7 @@
 package com.endpoint.endpoint.model;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
 import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 
 @MappedSuperclass
