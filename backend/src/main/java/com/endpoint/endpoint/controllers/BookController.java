@@ -65,13 +65,13 @@ public class BookController {
     @GetMapping("/title/{title}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public Optional<BookDTO> getBookByTitle(@PathVariable String title) {
-        return bookService.getByTitle(title);
+        return bookService.getBookByTitle(title);
     }
 
     @GetMapping("/isdn/{isdn}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public Optional<BookDTO> getBookByIsdn(@PathVariable String isdn) {
-        return bookService.getByIsdn(isdn);
+        return bookService.getBookByIsdn(isdn);
     }
 
     @PostMapping
@@ -95,7 +95,7 @@ public class BookController {
         return bookService.updateBook(isdn, title, content, author, releaseDate, book);
     }
 
-    @DeleteMapping("/{isdn}")
+    @DeleteMapping("/deleteBook/{isdn}")
     @PreAuthorize("hasRole('ADMIN')")
     public boolean deleteBook(@PathVariable String isdn) {
         return bookService.deleteBook(isdn);

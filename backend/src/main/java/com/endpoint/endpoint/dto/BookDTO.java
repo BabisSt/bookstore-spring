@@ -12,8 +12,6 @@ package com.endpoint.endpoint.dto;
 import com.endpoint.endpoint.model.Author;
 
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 

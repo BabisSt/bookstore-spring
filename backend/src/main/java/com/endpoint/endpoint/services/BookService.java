@@ -47,6 +47,12 @@ public class BookService {
     public BookService() {
     };
 
+    /*
+     * The purpose of this function is to get all the books via the findAll()
+     * function from the repository then feed it through a stream , change them to
+     * DTO and return them as a list. This way I don't expose the content and
+     * releaseDate of the book.
+     */
     public List<BookDTO> getAllBooks() {
         List<Book> books = bookRepository.findAll();
 
@@ -60,13 +66,13 @@ public class BookService {
         return listOfBooks.map(books -> books.stream().map(b -> BookMapper.toDTO(b)).collect(Collectors.toList()));
     }
 
-    public Optional<BookDTO> getByTitle(String title) {
+    public Optional<BookDTO> getBookByTitle(String title) {
 
         Optional<Book> book = bookRepository.findByTitle(title);
         return BookMapper.OptionaltoDTO(book);
     }
 
-    public Optional<BookDTO> getByIsdn(String isdn) {
+    public Optional<BookDTO> getBookByIsdn(String isdn) {
         Optional<Book> book = bookRepository.findByIsdn(isdn);
         return BookMapper.OptionaltoDTO(book);
     }
