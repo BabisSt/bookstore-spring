@@ -10,13 +10,24 @@ import org.springframework.stereotype.Service;
 import com.endpoint.endpoint.dto.UserDTO;
 import com.endpoint.endpoint.mapper.UserMapper;
 import com.endpoint.endpoint.model.User;
+import com.endpoint.endpoint.repositories.OrderRepository;
 import com.endpoint.endpoint.repositories.UserRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class UserService {
 
     @Autowired
+    private OrderRepository orderRepository;
+
+    @Autowired
     public UserRepository userRepository;
+
+    UserService(OrderRepository orderRepository, UserRepository userRepository) {
+        this.orderRepository = orderRepository;
+        this.userRepository = userRepository;
+    }
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -62,14 +73,19 @@ public class UserService {
     }
 
     public User createUser(User user) {
-        if (!user.isNew()) {
+        Optional<UserDTO> existingUser = getUserByEmail(user.getEmail());
+        if (existingUser.isPresent()) {
             throw new IllegalArgumentException("This user already exists");
         }
+
         return userRepository.save(user);
     }
 
+    @Transactional // Without the @Transactional annotation, JPA doesn’t open a transaction and
+                   // therefore cannot perform write operations like remove() or delete.
     public boolean deleteUser(Integer id) {
         if (userRepository.existsById(id)) {
+            orderRepository.deleteByUserId(id);
             userRepository.deleteById(id);
             return true;
         }

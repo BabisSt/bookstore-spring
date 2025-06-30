@@ -31,6 +31,7 @@ import com.endpoint.endpoint.model.Book;
 import com.endpoint.endpoint.repositories.BookRepository;
 import com.endpoint.endpoint.repositories.AuthorRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 
 @Service
 public class BookService {
@@ -77,8 +78,7 @@ public class BookService {
         return BookMapper.OptionaltoDTO(book);
     }
 
-    public BookDTO createBook(BookDTO bookDTO) {
-        Book book = BookMapper.toEntity(bookDTO);
+    public Book createBook(Book book) {
 
         // check if author exists
         if (book.getAuthor() == null || book.getAuthor().getId() == null) {
@@ -92,7 +92,7 @@ public class BookService {
         book.setAuthor(author);
         Book savedBook = bookRepository.save(book);
 
-        return BookMapper.toDTO(savedBook);
+        return savedBook;
     }
 
     public BookDTO updateBook(String isdn, String title, String content, Author author, Date releaseDate, Book book) {
@@ -108,6 +108,8 @@ public class BookService {
         return null;
     }
 
+    @Transactional // Without the @Transactional annotation, JPA doesn’t open a transaction and
+                   // therefore cannot perform write operations like remove() or delete.
     public boolean deleteBook(String isdn) {
         if (bookRepository.existsById(isdn)) {
             bookRepository.deleteById(isdn);

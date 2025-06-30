@@ -76,14 +76,14 @@ public class BookController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> createBook(@RequestBody @Valid BookDTO bookDto, BindingResult bindingResult) {
+    public ResponseEntity<?> createBook(@RequestBody @Valid Book book, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
             bindingResult.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
             return ResponseEntity.badRequest().body(errors);
         }
 
-        BookDTO createdBook = bookService.createBook(bookDto);
+        Book createdBook = bookService.createBook(book);
         return ResponseEntity.ok(createdBook);
     }
 
