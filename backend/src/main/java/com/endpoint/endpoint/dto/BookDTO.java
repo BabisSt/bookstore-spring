@@ -18,14 +18,14 @@ import jakarta.validation.constraints.Pattern;
 public class BookDTO {
 
     @Id
-    @NotBlank
+    // @NotBlank
     @Pattern(regexp = "^(\\d{10}|\\d{13})$", message = "ISDN must be either 10 or 13 digits")
     private String isdn;
 
-    @NotBlank
+    @NotBlank(message = "Title can't be empty")
     private String title;
 
-    @NotBlank
+    // @NotBlank
     private Author author;
 
     // Constructors

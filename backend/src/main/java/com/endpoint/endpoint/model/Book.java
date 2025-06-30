@@ -18,25 +18,25 @@ import jakarta.validation.constraints.Pattern;
 public class Book {
 
     @Id
-    @NotBlank
+    // @NotBlank
     @Pattern(regexp = "^(\\d{10}|\\d{13})$", message = "ISDN must be either 10 or 13 digits")
     @Column(name = "isdn")
     private String isdn;
 
-    @NotBlank
+    @NotBlank(message = "Title can't be empty")
     @Column(name = "title")
     private String title;
 
-    @NotBlank
+    // @NotBlank this is used only on strings
     @ManyToOne // Each Book Has One Author
     @JoinColumn(name = "author_id")
     private Author author;
 
-    @NotBlank
+    // @NotBlank
     @Column(name = "release_date")
     private Date releaseDate;
 
-    @NotBlank
+    @NotBlank(message = "Content can't be empty")
     @Column(name = "content")
     private String content;
 

@@ -9,8 +9,11 @@ import org.springframework.stereotype.Service;
 
 import com.endpoint.endpoint.dto.UserDTO;
 import com.endpoint.endpoint.mapper.UserMapper;
+import com.endpoint.endpoint.model.Author;
 import com.endpoint.endpoint.model.User;
 import com.endpoint.endpoint.repositories.UserRepository;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class UserService {
@@ -62,9 +65,11 @@ public class UserService {
     }
 
     public User createUser(User user) {
-        if (!user.isNew()) {
+        Optional<UserDTO> existingUser = getUserByEmail(user.getEmail());
+        if (existingUser.isPresent()) {
             throw new IllegalArgumentException("This user already exists");
         }
+
         return userRepository.save(user);
     }
 

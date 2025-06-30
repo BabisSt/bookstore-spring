@@ -77,8 +77,7 @@ public class BookService {
         return BookMapper.OptionaltoDTO(book);
     }
 
-    public BookDTO createBook(BookDTO bookDTO) {
-        Book book = BookMapper.toEntity(bookDTO);
+    public Book createBook(Book book) {
 
         // check if author exists
         if (book.getAuthor() == null || book.getAuthor().getId() == null) {
@@ -92,7 +91,7 @@ public class BookService {
         book.setAuthor(author);
         Book savedBook = bookRepository.save(book);
 
-        return BookMapper.toDTO(savedBook);
+        return savedBook;
     }
 
     public BookDTO updateBook(String isdn, String title, String content, Author author, Date releaseDate, Book book) {

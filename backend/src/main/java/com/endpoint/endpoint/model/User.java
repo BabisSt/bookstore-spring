@@ -18,32 +18,32 @@ public class User extends Person {
     @NotBlank(message = "Password can't be empty")
     private String password;
 
-    //Orders , must be an entity
+    public User() {
+    };
 
-    public User(){};
-
-    public User (String firstName , String lastName , String email, String password) {
+    public User(String firstName, String lastName, String email, String password) {
         super.setFirstName(firstName);
         super.setLastName(lastName);
         this.email = email;
         this.password = password;
     }
 
-    public String getEmail(){
+    public String getEmail() {
         return this.email;
     }
 
-    public void setEmail(String email){
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    public String getPassword(){
+    public String getPassword() {
         return this.password;
     }
 
-    public void setPassword(String password){
+    public void setPassword(String password) {
         this.password = password;
     }
+
     @Override
     public String toString() {
         return new ToStringCreator(this)
