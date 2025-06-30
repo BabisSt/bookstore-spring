@@ -14,6 +14,8 @@ import com.endpoint.endpoint.repositories.BookRepository;
 import com.endpoint.endpoint.repositories.OrderRepository;
 import com.endpoint.endpoint.repositories.UserRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class OrderService {
 
@@ -67,6 +69,8 @@ public class OrderService {
         return null;
     }
 
+    @Transactional // Without the @Transactional annotation, JPA doesn’t open a transaction and
+                   // therefore cannot perform write operations like remove() or delete.
     public boolean deleteOrder(Integer id) {
         if (orderRepository.existsById(id)) {
             orderRepository.deleteById(id);

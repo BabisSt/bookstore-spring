@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.endpoint.endpoint.model.Book;
 import com.endpoint.endpoint.model.Order;
 import com.endpoint.endpoint.model.User;
 
@@ -17,6 +16,6 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     Optional<List<Order>> findByUser(@NonNull User user);
 
-    // Optional<List<Order>> findByBook(@NonNull Book book);
+    void deleteByUserId(@NonNull Integer userId);
 
 }
