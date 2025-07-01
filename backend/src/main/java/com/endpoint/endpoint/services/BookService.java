@@ -73,8 +73,8 @@ public class BookService {
     }
 
     public Optional<BookDTO> getBookByIsdn(String isdn) {
-        Optional<Book> book = bookRepository.findByIsdn(isdn);
-        return BookMapper.OptionaltoDTO(book);
+        Book book = bookRepository.findByIsdn(isdn);
+        return Optional.ofNullable(BookMapper.toDTO(book));
     }
 
     public Book createBook(Book book) {
@@ -94,7 +94,7 @@ public class BookService {
         return savedBook;
     }
 
-    //Requires the whole Book entity to be sent in order to verify it
+    // Requires the whole Book entity to be sent in order to verify it
     public BookDTO updateBookTitle(String isdn, String newTitle, Book book) {
         if (bookRepository.existsById(isdn)) {
             book.setTitle(newTitle);
@@ -104,13 +104,13 @@ public class BookService {
         return null;
     }
 
-    //Requires the whole Book entity to be sent in order to verify it
+    // Requires the whole Book entity to be sent in order to verify it
     public BookDTO updateBookAuthor(String isdn, Integer newAuthorId, Book book) {
         if (bookRepository.existsById(isdn)) {
             // if author exists then link it with the book
             Author author = authorRepository.findById(newAuthorId)
-                .orElseThrow(
-                        () -> new EntityNotFoundException("Author not found with id: " + newAuthorId));
+                    .orElseThrow(
+                            () -> new EntityNotFoundException("Author not found with id: " + newAuthorId));
             book.setAuthor(author);
             Book savedBook = bookRepository.save(book);
             return BookMapper.toDTO(savedBook);

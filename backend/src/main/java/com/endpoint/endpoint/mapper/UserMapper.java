@@ -12,7 +12,7 @@ public class UserMapper {
             return null;
         }
 
-        return new UserDTO(user.getFirstName(), user.getLastName(), user.getEmail());
+        return new UserDTO(user.getFirstName(), user.getLastName(), user.getEmail(), user.getAboutSection());
     }
 
     public static Optional<UserDTO> OptionaltoDTO(Optional<User> user) {
@@ -21,7 +21,7 @@ public class UserMapper {
         }
 
         User u = user.get();
-        return Optional.of(new UserDTO(u.getFirstName(), u.getLastName(), u.getEmail()));
+        return Optional.of(new UserDTO(u.getFirstName(), u.getLastName(), u.getEmail(), u.getAboutSection()));
     }
 
     public static User toEntity(UserDTO userDTO) {
@@ -29,6 +29,7 @@ public class UserMapper {
             return null;
         }
 
-        return new User(userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(), null);
+        return new User(userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(), null,
+                userDTO.getAboutSection());
     }
 }

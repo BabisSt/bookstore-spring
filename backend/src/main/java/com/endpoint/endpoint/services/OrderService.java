@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.endpoint.endpoint.model.Book;
+import com.endpoint.endpoint.model.BookAmountPair;
 import com.endpoint.endpoint.model.Order;
 import com.endpoint.endpoint.model.User;
 import com.endpoint.endpoint.repositories.BookRepository;
@@ -48,33 +49,55 @@ public class OrderService {
     public Order createOrder(Order order) {
         User user = userRepository.findById(order.getUser().getId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
-        List<Book> books = order.getBooks().stream()
-                .map(book -> bookRepository.findById(book.getIsdn())
-                        .orElseThrow(() -> new RuntimeException("Book not found: " + book.getIsdn())))
+        List<BookAmountPair> checkedBooks = order.getBooks().stream()
+                .map(pair -> {
+                    Book freshBook = bookRepository.findById(pair.getBook().getIsdn())
+                            .orElseThrow(() -> new RuntimeException("Book not found: " + pair.getBook().getIsdn()));
+                    pair.setBook(freshBook); // update the book inside the pair
+                    return pair;
+                })
                 .collect(Collectors.toList());
 
         order.setUser(user);
-        order.setBooks(books);
-
+        order.setBooks(checkedBooks);
         return orderRepository.save(order);
     }
 
-    public Order updateOrderBooks(Integer id, List<Book> books, Order order) {
+    public Order updateOrderInsertBook(Integer id, Integer amount, String isdn, Order order) {
         if (orderRepository.existsById(id)) {
-            order.setBooks(books);
+
+            // Add the new book after checking it exists
+            Book newBook = bookRepository.findByIsdn(isdn);
+
+            // go to the order and add the new pair
+            order.getBooks().add(new BookAmountPair(order, newBook, amount));
             return orderRepository.save(order);
         }
         return null;
     }
 
-    //i need to find the specific book and then change its amount
-    public Order updateOrderAmount(Integer id,Integer amount, Book book, Order order) {
-        if (orderRepository.existsById(id) && orderRepository.) {
-            order.setBooks(books);
-            return orderRepository.save(order);
+    public Order updateOrderChangeAmount(Integer id, Integer amount, String isdn, Order order) {
+        if (!orderRepository.existsById(id)) {
+            return null; // order does not exist
         }
-        return null;
+
+        // Check if the book with the given isdn exists in the order
+        boolean bookFound = order.getBooks().stream()
+                .anyMatch(pair -> pair.getBook().getIsdn().equalsIgnoreCase(isdn));
+
+        if (!bookFound) {
+            throw new RuntimeException("Book with ISDN " + isdn + " not found in the order");
+        }
+        // find the pair and change the amount
+        for (int i = 0; i < order.getBooks().size(); i++) {
+            if (order.getBooks().get(i).getBook().getIsdn().equalsIgnoreCase(isdn)) {
+                order.getBooks().get(i).setAmount(amount);
+                break;
+            }
+
+        }
+
+        return orderRepository.save(order);
     }
 
     @Transactional // Without the @Transactional annotation, JPA doesn’t open a transaction and

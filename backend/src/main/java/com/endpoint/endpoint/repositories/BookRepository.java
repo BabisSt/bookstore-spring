@@ -22,7 +22,7 @@ public interface BookRepository extends JpaRepository<Book, String> {
 
     Optional<Book> findByTitle(@NonNull String title);
 
-    Optional<Book> findByIsdn(@NonNull String isdn);
+    Book findByIsdn(@NonNull String isdn);
 
     Optional<List<Book>> findByAuthor(@NonNull Author author);
 }

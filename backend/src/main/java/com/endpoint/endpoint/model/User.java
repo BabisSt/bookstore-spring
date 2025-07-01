@@ -21,11 +21,12 @@ public class User extends Person {
     public User() {
     };
 
-    public User(String firstName, String lastName, String email, String password) {
+    public User(String firstName, String lastName, String email, String password, String aboutSection) {
         super.setFirstName(firstName);
         super.setLastName(lastName);
         this.email = email;
         this.password = password;
+        super.setAboutSection(aboutSection);
     }
 
     public String getEmail() {

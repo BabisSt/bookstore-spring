@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
@@ -45,12 +46,6 @@ public class UserController {
     public List<UserDTO> getAllUsers() {
         return userService.getAllUsers();
     }
-
-    // @GetMapping("/{id}")
-    // @PreAuthorize("hasRole('ADMIN')")
-    // public Optional<UserDTO> getUserById(@PathVariable Integer id) {
-    // return userService.getUserById(id);
-    // }
 
     @GetMapping("/firstName/{firstName}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
@@ -81,6 +76,22 @@ public class UserController {
 
         User createdUser = userService.createUser(user);
         return ResponseEntity.ok(createdUser);
+    }
+
+    @PutMapping("/updatePassword/{id}/{newPassword}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public User updatePassword(@PathVariable("id") Integer id,
+            @PathVariable("newPassword") String newPassword,
+            @RequestBody @Valid User user) {
+        return userService.updatePassword(id, newPassword, user);
+    }
+
+    @PutMapping("/updateAboutSection/{id}/{newAboutSection}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public User updateAboutSection(@PathVariable("id") Integer id,
+            @PathVariable("newAboutSection") String newAboutSection,
+            @RequestBody @Valid User user) {
+        return userService.updateAboutSection(id, newAboutSection, user);
     }
 
     @DeleteMapping("/deleteUser/{id}")

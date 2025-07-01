@@ -2,7 +2,6 @@ package com.endpoint.endpoint.controllers;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.endpoint.endpoint.model.Book;
 import com.endpoint.endpoint.model.Order;
 import com.endpoint.endpoint.services.OrderService;
 
@@ -63,11 +62,20 @@ public class OrderController {
         return ResponseEntity.ok(createdOrder);
     }
 
-    @PutMapping("/{id}/{amount}/{books}")
+    @PutMapping("/insert/{id}/{amount}/{isdn}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public Order updateBook(@PathVariable("id") Integer id, @PathVariable("amount") Integer amount,
-            @PathVariable("books") @Valid List<Book> books, @RequestBody @Valid Order order) {
-        return orderService.updateOrder(id, amount, books, order);
+    public Order updateOrderInsertBook(@PathVariable("id") Integer id,
+            @PathVariable("amount") Integer amount, @PathVariable("isdn") String isdn,
+            @RequestBody @Valid Order order) {
+        return orderService.updateOrderInsertBook(id, amount, isdn, order);
+    }
+
+    @PutMapping("/updateAmount/{id}/{amount}/{isdn}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public Order updateOrderChangeAmount(@PathVariable("id") Integer id,
+            @PathVariable("amount") Integer amount, @PathVariable("isdn") String isdn,
+            @RequestBody @Valid Order order) {
+        return orderService.updateOrderChangeAmount(id, amount, isdn, order);
     }
 
     @DeleteMapping("/deleteOrder/{id}")

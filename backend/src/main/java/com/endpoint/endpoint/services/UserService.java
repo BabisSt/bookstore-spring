@@ -81,6 +81,22 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public User updatePassword(Integer id, String newPassword, User user) {
+        if (!userRepository.existsById(id)) {
+            return null; // user does not exist
+        }
+        user.setPassword(newPassword);
+        return userRepository.save(user);
+    }
+
+    public User updateAboutSection(Integer id, String newAboutSection, User user) {
+        if (!userRepository.existsById(id)) {
+            return null; // user does not exist
+        }
+        user.setAboutSection(newAboutSection);
+        return userRepository.save(user);
+    }
+
     @Transactional // Without the @Transactional annotation, JPA doesn’t open a transaction and
                    // therefore cannot perform write operations like remove() or delete.
     public boolean deleteUser(Integer id) {

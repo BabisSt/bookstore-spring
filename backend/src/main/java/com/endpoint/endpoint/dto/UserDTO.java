@@ -14,10 +14,11 @@ public class UserDTO extends Person {
     public UserDTO() {
     };
 
-    public UserDTO(String firstName, String lastName, String email) {
+    public UserDTO(String firstName, String lastName, String email, String aboutSection) {
         super.setFirstName(firstName);
         super.setLastName(lastName);
         this.email = email;
+        super.setAboutSection(aboutSection);
 
     }
 
