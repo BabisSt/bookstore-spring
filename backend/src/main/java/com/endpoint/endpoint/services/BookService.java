@@ -16,7 +16,6 @@
 
 package com.endpoint.endpoint.services;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -95,13 +94,24 @@ public class BookService {
         return savedBook;
     }
 
-    public BookDTO updateBook(String isdn, String title, String content, Author author, Date releaseDate, Book book) {
+    //Requires the whole Book entity to be sent in order to verify it
+    public BookDTO updateBookTitle(String isdn, String newTitle, Book book) {
         if (bookRepository.existsById(isdn)) {
-            book.setIsdn(isdn);
-            book.setTitle(title);
-            book.setContent(content);
+            book.setTitle(newTitle);
+            Book savedBook = bookRepository.save(book);
+            return BookMapper.toDTO(savedBook);
+        }
+        return null;
+    }
+
+    //Requires the whole Book entity to be sent in order to verify it
+    public BookDTO updateBookAuthor(String isdn, Integer newAuthorId, Book book) {
+        if (bookRepository.existsById(isdn)) {
+            // if author exists then link it with the book
+            Author author = authorRepository.findById(newAuthorId)
+                .orElseThrow(
+                        () -> new EntityNotFoundException("Author not found with id: " + newAuthorId));
             book.setAuthor(author);
-            book.setReleaseDate(releaseDate);
             Book savedBook = bookRepository.save(book);
             return BookMapper.toDTO(savedBook);
         }

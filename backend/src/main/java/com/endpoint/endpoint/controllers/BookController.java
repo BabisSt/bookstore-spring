@@ -17,7 +17,6 @@
 
 package com.endpoint.endpoint.controllers;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,12 +86,20 @@ public class BookController {
         return ResponseEntity.ok(createdBook);
     }
 
-    @PutMapping("/{isdn}/{title}/{content}/{author}/{releaseDate}")
+    //Requires the whole Book entity to be sent in order to verify it
+    @PutMapping("/updateTitle/{isdn}/{newTitle}")
     @PreAuthorize("hasRole('ADMIN')")
-    public BookDTO updateBook(@PathVariable("isdn") String isdn, @PathVariable("title") String title,
-            @PathVariable("content") String content, @PathVariable("author") Author author,
-            @PathVariable("date") Date releaseDate, @RequestBody @Valid Book book) {
-        return bookService.updateBook(isdn, title, content, author, releaseDate, book);
+    public BookDTO updateBookTitle(@PathVariable("isdn") String isdn, @PathVariable("newTitle") String newTitle,
+            @RequestBody @Valid Book book) {
+        return bookService.updateBookTitle(isdn, newTitle, book);
+    }
+
+    //Requires the whole Book entity to be sent in order to verify it
+    @PutMapping("updateAuthor/{isdn}/{newAuthorId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public BookDTO updateBookAuthor(@PathVariable("isdn") String isdn, @PathVariable("newAuthorId") Integer newAuthorId,
+            @RequestBody @Valid Book book) {
+        return bookService.updateBookAuthor(isdn, newAuthorId, book);
     }
 
     @DeleteMapping("/deleteBook/{isdn}")

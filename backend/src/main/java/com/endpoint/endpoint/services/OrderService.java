@@ -60,9 +60,17 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    public Order updateOrder(Integer id, Integer amount, List<Book> books, Order order) {
+    public Order updateOrderBooks(Integer id, List<Book> books, Order order) {
         if (orderRepository.existsById(id)) {
-            order.setAmount(amount);
+            order.setBooks(books);
+            return orderRepository.save(order);
+        }
+        return null;
+    }
+
+    //i need to find the specific book and then change its amount
+    public Order updateOrderAmount(Integer id,Integer amount, Book book, Order order) {
+        if (orderRepository.existsById(id) && orderRepository.) {
             order.setBooks(books);
             return orderRepository.save(order);
         }
