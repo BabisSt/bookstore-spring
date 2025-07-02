@@ -12,6 +12,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.endpoint.endpoint.enums.BookGenre;
 import com.endpoint.endpoint.model.Author;
 import com.endpoint.endpoint.model.Book;
 

@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.endpoint.endpoint.dto.BookDTO;
+import com.endpoint.endpoint.enums.BookGenre;
 import com.endpoint.endpoint.model.Author;
 import com.endpoint.endpoint.model.Book;
 import com.endpoint.endpoint.services.BookService;
@@ -100,6 +101,20 @@ public class BookController {
     public BookDTO updateBookAuthor(@PathVariable("isdn") String isdn, @PathVariable("newAuthorId") Integer newAuthorId,
             @RequestBody @Valid Book book) {
         return bookService.updateBookAuthor(isdn, newAuthorId, book);
+    }
+
+    @PutMapping("/addBookGenre/{isdn}/{newBookGenre}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public BookDTO addBookGenre(@PathVariable("isdn") String isdn, @PathVariable("newBookGenre") BookGenre newBookGenre,
+            @RequestBody @Valid Book book) {
+        return bookService.addBookGenre(isdn, newBookGenre, book);
+    }
+
+    @PutMapping("/removeBookGenre/{isdn}/{removedBookGenre}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public BookDTO removeBookGenre(@PathVariable("isdn") String isdn, @PathVariable("removedBookGenre") BookGenre removedBookGenre,
+            @RequestBody @Valid Book book) {
+        return bookService.removeBookGenre(isdn, removedBookGenre, book);
     }
 
     @DeleteMapping("/deleteBook/{isdn}")

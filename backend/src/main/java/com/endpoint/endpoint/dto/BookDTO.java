@@ -9,8 +9,13 @@
 
 package com.endpoint.endpoint.dto;
 
+import java.util.List;
+
+import com.endpoint.endpoint.enums.BookGenre;
 import com.endpoint.endpoint.model.Author;
 
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -28,14 +33,17 @@ public class BookDTO {
     // @NotBlank
     private Author author;
 
+    @Enumerated(EnumType.STRING)
+    private List<BookGenre> bookGenre;
     // Constructors
     public BookDTO() {
     }
 
-    public BookDTO(String isdn, String title, Author author) {
+    public BookDTO(String isdn, String title, Author author, List<BookGenre> bookGenre) {
         this.isdn = isdn;
         this.title = title;
         this.author = author;
+        this.bookGenre = bookGenre;
     }
 
     // Getters and setters
@@ -61,5 +69,13 @@ public class BookDTO {
 
     public void setAuthor(Author author) {
         this.author = author;
+    }
+
+    public List<BookGenre> getBookGenre() {
+        return this.bookGenre;
+    }
+
+    public void setBookGenre(List<BookGenre> bookGenre) {
+        this.bookGenre = bookGenre;
     }
 }
