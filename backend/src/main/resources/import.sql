@@ -8,6 +8,12 @@ INSERT INTO books (isdn, title, content, author_id, release_date) VALUES ('97831
 INSERT INTO books (isdn, title, content, author_id, release_date) VALUES ('0306406152', 'Brave New World', 'Sci-fi novel', 2, '1932-01-01');
 INSERT INTO books (isdn, title, content, author_id, release_date) VALUES ('9780131103627', 'Fahrenheit 451', 'Dystopian novel', 3, '1953-10-19');
 
+-- Insert Book Genre and make the connections
+INSERT INTO book_genres(book_isdn, book_genre) VALUES ('9783161484100', 'Action');
+INSERT INTO book_genres(book_isdn, book_genre) VALUES ('9783161484100', 'Adventure');
+INSERT INTO book_genres(book_isdn, book_genre) VALUES ('0306406152', 'Adventure');
+INSERT INTO book_genres(book_isdn, book_genre) VALUES ('9780131103627', 'Mystery');
+
 -- Insert Users -- store password as plain text for now
 INSERT INTO users (first_name, last_name, email, password,about_section) VALUES ('John', 'Doe', 'johnDoe@gmail.com', '123','British writer');
 INSERT INTO users (first_name, last_name, email, password,about_section) VALUES ('Maria', 'Smit', 'mariaS@yahoo.com','123','English writer and philosopher');

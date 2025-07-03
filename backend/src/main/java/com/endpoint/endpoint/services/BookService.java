@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.endpoint.endpoint.dto.BookDTO;
+import com.endpoint.endpoint.enums.BookGenre;
 import com.endpoint.endpoint.mapper.BookMapper;
 import com.endpoint.endpoint.model.Author;
 import com.endpoint.endpoint.model.Book;
@@ -118,6 +119,34 @@ public class BookService {
         return null;
     }
 
+    // Requires the whole Book entity to be sent in order to verify it
+    public BookDTO addBookGenre(String isdn, BookGenre newBookGenre, Book book) {
+        if (bookRepository.existsById(isdn)) {
+            // if genre exists then link it with the book
+            for (BookGenre bookGenre : BookGenre.values()){
+                if(bookGenre.name().equalsIgnoreCase(newBookGenre.toString())){
+                    book.addBookGenre(newBookGenre);
+                    Book savedBook = bookRepository.save(book);
+                    return BookMapper.toDTO(savedBook);
+                }
+            }
+        }
+        return null;
+    }
+
+    public BookDTO removeBookGenre(String isdn, BookGenre deletingBookGenre, Book book) {
+        if (bookRepository.existsById(isdn)) {
+            for (BookGenre bookGenre : BookGenre.values()){
+                if(bookGenre.name().equalsIgnoreCase(deletingBookGenre.toString())){
+                    book.removeBookGenre(deletingBookGenre);
+                    Book savedBook = bookRepository.save(book);
+                    return BookMapper.toDTO(savedBook);
+                }
+            }
+        }
+        return null;
+    }
+
     @Transactional // Without the @Transactional annotation, JPA doesn’t open a transaction and
                    // therefore cannot perform write operations like remove() or delete.
     public boolean deleteBook(String isdn) {
@@ -127,5 +156,5 @@ public class BookService {
         }
         return false;
     }
-
+    
 }
