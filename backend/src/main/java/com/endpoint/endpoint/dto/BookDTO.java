@@ -10,40 +10,46 @@
 package com.endpoint.endpoint.dto;
 
 import java.util.List;
+import java.util.Set;
 
 import com.endpoint.endpoint.enums.BookGenre;
 import com.endpoint.endpoint.model.Author;
+import com.endpoint.endpoint.model.BookReviews;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 public class BookDTO {
 
     @Id
-    // @NotBlank
     @Pattern(regexp = "^(\\d{10}|\\d{13})$", message = "ISDN must be either 10 or 13 digits")
     private String isdn;
 
     @NotBlank(message = "Title can't be empty")
     private String title;
 
-    // @NotBlank
+    @NotNull
     private Author author;
 
     @Enumerated(EnumType.STRING)
-    private List<BookGenre> bookGenre;
+    private Set<BookGenre> bookGenre;
+
+    private List<BookReviews> bookReviews;
+
     // Constructors
     public BookDTO() {
     }
 
-    public BookDTO(String isdn, String title, Author author, List<BookGenre> bookGenre) {
+    public BookDTO(String isdn, String title, Author author, Set<BookGenre> bookGenre, List<BookReviews> bookReviews) {
         this.isdn = isdn;
         this.title = title;
         this.author = author;
         this.bookGenre = bookGenre;
+        this.bookReviews = bookReviews;
     }
 
     // Getters and setters
@@ -71,11 +77,19 @@ public class BookDTO {
         this.author = author;
     }
 
-    public List<BookGenre> getBookGenre() {
+    public Set<BookGenre> getBookGenre() {
         return this.bookGenre;
     }
 
-    public void setBookGenre(List<BookGenre> bookGenre) {
+    public void setBookGenre(Set<BookGenre> bookGenre) {
         this.bookGenre = bookGenre;
+    }
+
+    public List<BookReviews> getBookReviews() {
+        return this.bookReviews;
+    }
+
+    public void setBookReviews(List<BookReviews> bookReviews) {
+        this.bookReviews = bookReviews;
     }
 }

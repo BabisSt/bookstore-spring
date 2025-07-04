@@ -2,11 +2,14 @@ package com.endpoint.endpoint.model;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.core.style.ToStringCreator;
 
 import com.endpoint.endpoint.enums.BookGenre;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -16,6 +19,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -47,26 +51,30 @@ public class Book {
     @Column(name = "content")
     private String content;
 
-    //connecting the books with there genres , they are enums. Can't user ManyToMany because genres are enums and not an entity
+    // connecting the books with there genres , they are enums. Can't user
+    // ManyToMany because genres are enums and not an entity
     @ElementCollection(targetClass = BookGenre.class)
-    @CollectionTable(
-        name = "book_genres",
-        joinColumns = @JoinColumn(name = "book_isdn")
-    )
+    @CollectionTable(name = "book_genres", joinColumns = @JoinColumn(name = "book_isdn"))
     @Enumerated(EnumType.STRING)
     @Column(name = "book_genre")
-    private List<BookGenre> bookGenre;
+    private Set<BookGenre> bookGenre;
+
+    @JsonManagedReference(value = "book-review")
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BookReviews> bookReviews;
 
     public Book() {
     };
 
-    public Book(String isdn, String title, Author author, Date releaseDate, String content, List<BookGenre> bookGenre) {
+    public Book(String isdn, String title, Author author, Date releaseDate, String content, Set<BookGenre> bookGenre,
+            List<BookReviews> bookReviews) {
         this.isdn = isdn;
         this.title = title;
         this.author = author;
         this.releaseDate = releaseDate;
         this.content = content;
         this.bookGenre = bookGenre;
+        this.bookReviews = bookReviews;
     }
 
     public String getIsdn() {
@@ -109,11 +117,11 @@ public class Book {
         this.content = content;
     }
 
-    public List<BookGenre> getBookGenre() {
+    public Set<BookGenre> getBookGenre() {
         return this.bookGenre;
     }
 
-    public void setBookGenre(List<BookGenre> bookGenre) {
+    public void setBookGenre(Set<BookGenre> bookGenre) {
         this.bookGenre = bookGenre;
     }
 
@@ -124,6 +132,15 @@ public class Book {
     public void removeBookGenre(BookGenre bookGenre) {
         this.bookGenre.remove(bookGenre);
     }
+
+    public List<BookReviews> getBookReviews() {
+        return this.bookReviews;
+    }
+
+    public void setBookReviews(List<BookReviews> bookReviews) {
+        this.bookReviews = bookReviews;
+    }
+
     @Override
     public String toString() {
         return new ToStringCreator(this)
@@ -132,6 +149,7 @@ public class Book {
                 .append("author", this.getAuthor())
                 .append("releadeDate", this.getReleaseDate())
                 .append("content", this.getContent())
-                .append("bookGenre", this.getBookGenre()).toString();
+                .append("bookGenre", this.getBookGenre())
+                .append("bookReviews", this.getBookReviews()).toString();
     }
 }
