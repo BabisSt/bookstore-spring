@@ -1,7 +1,5 @@
 package com.endpoint.endpoint.mapper;
 
-import java.util.Optional;
-
 import com.endpoint.endpoint.dto.UserDTO;
 import com.endpoint.endpoint.model.User;
 
@@ -16,14 +14,13 @@ public class UserMapper {
                 user.getBookReviews());
     }
 
-    public static Optional<UserDTO> OptionaltoDTO(Optional<User> user) {
+    public static UserDTO OptionaltoDTO(User user) {
         if (user == null) {
             return null;
         }
 
-        User u = user.get();
-        return Optional.of(
-                new UserDTO(u.getFirstName(), u.getLastName(), u.getEmail(), u.getAboutSection(), u.getBookReviews()));
+        User u = user;
+        return new UserDTO(u.getFirstName(), u.getLastName(), u.getEmail(), u.getAboutSection(), u.getBookReviews());
     }
 
     public static User toEntity(UserDTO userDTO) {
