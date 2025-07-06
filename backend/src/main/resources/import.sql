@@ -19,6 +19,12 @@ INSERT INTO users (first_name, last_name, email, password,about_section) VALUES 
 INSERT INTO users (first_name, last_name, email, password,about_section) VALUES ('Maria', 'Smit', 'mariaS@yahoo.com','123','English writer and philosopher');
 INSERT INTO users (first_name, last_name, email, password,about_section) VALUES ('Luke', 'Arrow', 'look@windowslive.com', '123','American author known for Fahrenheit 451');
 
+-- Insert Book Reviews and make the connections
+INSERT INTO book_reviews (book_isdn, user_id, stars) VALUES ('9783161484100', 1, 1);
+INSERT INTO book_reviews (book_isdn, user_id, stars) VALUES ('9783161484100', 2, 3);
+INSERT INTO book_reviews (book_isdn, user_id, stars) VALUES ('0306406152', 1, 4);
+INSERT INTO book_reviews (book_isdn, user_id, stars) VALUES ('9780131103627', 3, 2);
+
 -- Corrected: No explicit 'order_id', since it's auto-generated as 'id'
 INSERT INTO orders (user_id) VALUES (1);
 INSERT INTO orders (user_id) VALUES (2);
