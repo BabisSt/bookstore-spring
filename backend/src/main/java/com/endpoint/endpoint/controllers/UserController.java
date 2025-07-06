@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -49,19 +48,19 @@ public class UserController {
 
     @GetMapping("/firstName/{firstName}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public Optional<UserDTO> getUserByFirstName(@PathVariable String firstName) {
+    public UserDTO getUserByFirstName(@PathVariable String firstName) {
         return userService.getUserByFirstName(firstName);
     }
 
     @GetMapping("/lastName/{lastName}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public Optional<UserDTO> getUserByLastName(@PathVariable String lastName) {
+    public UserDTO getUserByLastName(@PathVariable String lastName) {
         return userService.getUserByLastName(lastName);
     }
 
     @GetMapping("/email/{email}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public Optional<UserDTO> getUserByEmail(@PathVariable String email) {
+    public UserDTO getUserByEmail(@PathVariable String email) {
         return userService.getUserByEmail(email);
     }
 
@@ -78,20 +77,18 @@ public class UserController {
         return ResponseEntity.ok(createdUser);
     }
 
-    @PutMapping("/updatePassword/{id}/{newPassword}")
+    @PutMapping("/updatePassword/{email}/{oldPassword}/{newPassword}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public User updatePassword(@PathVariable("id") Integer id,
-            @PathVariable("newPassword") String newPassword,
-            @RequestBody @Valid User user) {
-        return userService.updatePassword(id, newPassword, user);
+    public UserDTO updatePassword(@PathVariable("email") String email,
+            @PathVariable("oldPassword") String oldPassword, @PathVariable("newPassword") String newPassword) {
+        return userService.updatePassword(email, oldPassword, newPassword);
     }
 
-    @PutMapping("/updateAboutSection/{id}/{newAboutSection}")
+    @PutMapping("/updateAboutSection/{email}/{newAboutSection}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public User updateAboutSection(@PathVariable("id") Integer id,
-            @PathVariable("newAboutSection") String newAboutSection,
-            @RequestBody @Valid User user) {
-        return userService.updateAboutSection(id, newAboutSection, user);
+    public UserDTO updateAboutSection(@PathVariable("email") String email,
+            @PathVariable("newAboutSection") String newAboutSection) {
+        return userService.updateAboutSection(email, newAboutSection);
     }
 
     @DeleteMapping("/deleteUser/{id}")

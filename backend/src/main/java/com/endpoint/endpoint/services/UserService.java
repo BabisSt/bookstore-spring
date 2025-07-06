@@ -1,7 +1,6 @@
 package com.endpoint.endpoint.services;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,53 +47,59 @@ public class UserService {
         return users.stream().map(u -> UserMapper.toDTO(u)).collect(Collectors.toList());
     }
 
-    public Optional<UserDTO> getUserById(Integer Id) {
-        Optional<User> user = userRepository.findById(Id);
-
-        return UserMapper.OptionaltoDTO(user);
+    public UserDTO getUserById(Integer id) {
+        return userRepository.findById(id)
+                .map(u -> UserMapper.toDTO(u)) // applies toDTO only if user is present
+                .orElse(null); // returns null if user is not found
     }
 
-    public Optional<UserDTO> getUserByFirstName(String firstName) {
-        Optional<User> user = userRepository.findByFirstName(firstName);
-
-        return UserMapper.OptionaltoDTO(user);
+    public UserDTO getUserByFirstName(String firstName) {
+        User user = userRepository.findByFirstName(firstName);
+        return UserMapper.toDTO(user);
     }
 
-    public Optional<UserDTO> getUserByLastName(String lastName) {
-        Optional<User> user = userRepository.findByLastName(lastName);
-
-        return UserMapper.OptionaltoDTO(user);
+    public UserDTO getUserByLastName(String lastName) {
+        User user = userRepository.findByLastName(lastName);
+        return UserMapper.toDTO(user);
     }
 
-    public Optional<UserDTO> getUserByEmail(String email) {
-        Optional<User> user = userRepository.findByEmail(email);
-
-        return UserMapper.OptionaltoDTO(user);
+    public UserDTO getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email);
+        return UserMapper.toDTO(user);
     }
 
     public User createUser(User user) {
-        Optional<UserDTO> existingUser = getUserByEmail(user.getEmail());
-        if (existingUser.isPresent()) {
+        if (userRepository.existsById(user.getId()) || userRepository.findByEmail(user.getEmail()) != null) {
             throw new IllegalArgumentException("This user already exists");
         }
-
         return userRepository.save(user);
     }
 
-    public User updatePassword(Integer id, String newPassword, User user) {
-        if (!userRepository.existsById(id)) {
-            return null; // user does not exist
-        }
+    public UserDTO updatePassword(String email, String oldPassword, String newPassword) {
+
+        if (userRepository.findByEmail(email) == null)
+            return null;
+
+        User user = userRepository.findByEmail(email);
+
+        if (!user.getPassword().equalsIgnoreCase(oldPassword))
+            return null;
+
         user.setPassword(newPassword);
-        return userRepository.save(user);
+        User updatedUser = userRepository.save(user); // Save the entity
+        return UserMapper.toDTO(updatedUser); // Return a DTO
+
     }
 
-    public User updateAboutSection(Integer id, String newAboutSection, User user) {
-        if (!userRepository.existsById(id)) {
-            return null; // user does not exist
-        }
+    public UserDTO updateAboutSection(String email, String newAboutSection) {
+        if (userRepository.findByEmail(email) == null)
+            return null;
+
+        User user = userRepository.findByEmail(email);
+
         user.setAboutSection(newAboutSection);
-        return userRepository.save(user);
+        User updatedUser = userRepository.save(user); // Save the entity
+        return UserMapper.toDTO(updatedUser); // Return a DTO
     }
 
     @Transactional // Without the @Transactional annotation, JPA doesn’t open a transaction and

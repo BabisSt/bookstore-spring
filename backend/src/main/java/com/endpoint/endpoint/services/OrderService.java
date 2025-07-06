@@ -1,14 +1,20 @@
 package com.endpoint.endpoint.services;
 
 import java.util.List;
-import java.util.Optional;
+
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.endpoint.endpoint.dto.OrderDTO;
+import com.endpoint.endpoint.dto.UserDTO;
+
+import com.endpoint.endpoint.mapper.OrderMapper;
+import com.endpoint.endpoint.mapper.UserMapper;
 import com.endpoint.endpoint.model.Book;
 import com.endpoint.endpoint.model.BookAmountPair;
+
 import com.endpoint.endpoint.model.Order;
 import com.endpoint.endpoint.model.User;
 import com.endpoint.endpoint.repositories.BookRepository;
@@ -33,23 +39,35 @@ public class OrderService {
         this.bookRepository = bookRepository;
     }
 
-    public List<Order> getAllOrders() {
-        return orderRepository.findAll();
+    public List<OrderDTO> getAllOrders() {
+        List<Order> orders = orderRepository.findAll();
+        List<OrderDTO> ordersDTO = orders.stream()
+                .map(o -> OrderMapper.toDTO(o))
+                .collect(Collectors.toList());
+        return ordersDTO;
     }
 
-    public Optional<List<Order>> getOrdersByUser(Integer userId) {
-        return userRepository.findById(userId)
-                .flatMap(user -> orderRepository.findByUser(user));
-    }
-
-    public Optional<Order> getOrderById(Integer id) {
-        return orderRepository.findById(id);
-    }
-
-    public Order createOrder(Order order) {
-        User user = userRepository.findById(order.getUser().getId())
+    public List<OrderDTO> getOrdersByUser(Integer userId) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        List<BookAmountPair> checkedBooks = order.getBooks().stream()
+        List<Order> orders = orderRepository.findByUser(user);
+        List<OrderDTO> ordersDTO = orders.stream()
+                .map(o -> OrderMapper.toDTO(o))
+                .collect(Collectors.toList());
+        return ordersDTO;
+    }
+
+    public OrderDTO getOrderById(Integer id) {
+        Order order = orderRepository.findById(id).orElseThrow(() -> new RuntimeException("Order not found"));
+
+        return OrderMapper.toDTO(order);
+    }
+
+    public OrderDTO createOrder(OrderDTO orderDTO) {
+        User user = userRepository.findById(orderDTO.getUser().getId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        UserDTO userDTO = UserMapper.toDTO(user);
+        List<BookAmountPair> checkedBooks = orderDTO.getBooks().stream()
                 .map(pair -> {
                     Book freshBook = bookRepository.findById(pair.getBook().getIsdn())
                             .orElseThrow(() -> new RuntimeException("Book not found: " + pair.getBook().getIsdn()));
@@ -58,29 +76,34 @@ public class OrderService {
                 })
                 .collect(Collectors.toList());
 
-        order.setUser(user);
-        order.setBooks(checkedBooks);
-        return orderRepository.save(order);
+        orderDTO.setUser(userDTO);
+        orderDTO.setBooks(checkedBooks);
+        orderRepository.save(OrderMapper.toEntity(orderDTO));
+
+        return orderDTO;
     }
 
-    public Order updateOrderInsertBook(Integer id, Integer amount, String isdn, Order order) {
+    public OrderDTO updateOrderInsertBook(Integer id, Integer amount, String isdn) {
         if (orderRepository.existsById(id)) {
 
             // Add the new book after checking it exists
             Book newBook = bookRepository.findByIsdn(isdn);
+            Order order = orderRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Order not found"));
 
             // go to the order and add the new pair
             order.getBooks().add(new BookAmountPair(order, newBook, amount));
-            return orderRepository.save(order);
+            return OrderMapper.toDTO(order);
         }
         return null;
     }
 
-    public Order updateOrderChangeAmount(Integer id, Integer amount, String isdn, Order order) {
+    public OrderDTO updateOrderChangeAmount(Integer id, Integer amount, String isdn) {
         if (!orderRepository.existsById(id)) {
             return null; // order does not exist
         }
-
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
         // Check if the book with the given isdn exists in the order
         boolean bookFound = order.getBooks().stream()
                 .anyMatch(pair -> pair.getBook().getIsdn().equalsIgnoreCase(isdn));
@@ -96,8 +119,8 @@ public class OrderService {
             }
 
         }
-
-        return orderRepository.save(order);
+        orderRepository.save(order);
+        return OrderMapper.toDTO(order);
     }
 
     @Transactional // Without the @Transactional annotation, JPA doesn’t open a transaction and
