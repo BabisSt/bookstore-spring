@@ -7,7 +7,6 @@ import java.util.Set;
 import org.springframework.core.style.ToStringCreator;
 
 import com.endpoint.endpoint.enums.BookGenre;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
@@ -59,7 +58,6 @@ public class Book {
     @Column(name = "book_genre")
     private Set<BookGenre> bookGenre;
 
-    @JsonManagedReference(value = "book-review")
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BookReviews> bookReviews;
 

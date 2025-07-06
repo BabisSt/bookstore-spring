@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.springframework.core.style.ToStringCreator;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
@@ -24,7 +22,6 @@ public class User extends Person {
     @NotBlank(message = "Password can't be empty")
     private String password;
 
-    @JsonManagedReference(value = "user-review")
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BookReviews> bookReviews;
 

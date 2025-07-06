@@ -2,7 +2,6 @@ package com.endpoint.endpoint.model;
 
 import org.springframework.core.style.ToStringCreator;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;

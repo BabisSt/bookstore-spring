@@ -2,11 +2,13 @@ package com.endpoint.endpoint.services;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.endpoint.endpoint.model.BookReviews;
+import com.endpoint.endpoint.model.User;
+import com.endpoint.endpoint.model.Book;
+import com.endpoint.endpoint.repositories.BookRepository;
 import com.endpoint.endpoint.repositories.BookReviewsRepository;
 import com.endpoint.endpoint.repositories.UserRepository;
 
@@ -15,10 +17,13 @@ public class BookReviewsService {
 
     private final BookReviewsRepository bookReviewsRepository;
     private final UserRepository userRepository;
+    private final BookRepository bookRepository;
 
-    public BookReviewsService(BookReviewsRepository bookReviewsRepository, UserRepository userRepository) {
+    public BookReviewsService(BookReviewsRepository bookReviewsRepository, UserRepository userRepository,
+            BookRepository bookRepository) {
         this.bookReviewsRepository = bookReviewsRepository;
         this.userRepository = userRepository;
+        this.bookRepository = bookRepository;
     }
 
     public List<BookReviews> getAllBookReviews() {
@@ -34,21 +39,30 @@ public class BookReviewsService {
         return bookReviewsRepository.findById(id);
     }
 
-    // public Order createOrder(Order order) {
-    // User user = userRepository.findById(order.getUser().getId())
-    // .orElseThrow(() -> new RuntimeException("User not found"));
-    // List<BookAmountPair> checkedBooks = order.getBooks().stream()
-    // .map(pair -> {
-    // Book freshBook = bookRepository.findById(pair.getBook().getIsdn())
-    // .orElseThrow(() -> new RuntimeException("Book not found: " +
-    // pair.getBook().getIsdn()));
-    // pair.setBook(freshBook); // update the book inside the pair
-    // return pair;
-    // })
-    // .collect(Collectors.toList());
+    public BookReviews createBookReview(BookReviews bookReview) {
+        User user = userRepository.findById(bookReview.getUser().getId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-    // order.setUser(user);
-    // order.setBooks(checkedBooks);
-    // return orderRepository.save(order);
-    // }
+        Book book = bookRepository.findById(bookReview.getBook().getIsdn())
+                .orElseThrow(() -> new RuntimeException("Book not found"));
+
+        Optional<BookReviews> existingReview = bookReviewsRepository.findByUserAndBook(user, book);
+        if (existingReview.isPresent()) {
+            throw new RuntimeException("This user has already reviewed this book.");
+        }
+
+        bookReview.setUser(user);
+        bookReview.setBook(book);
+
+        return bookReviewsRepository.save(bookReview);
+    }
+
+    public BookReviews updateStarsBookReview(Integer id, Integer stars, BookReviews bookReview) {
+        if (bookReviewsRepository.existsById(id)) {
+
+            bookReview.setStars(stars);
+            return bookReviewsRepository.save(bookReview);
+        }
+        return null;
+    }
 }
