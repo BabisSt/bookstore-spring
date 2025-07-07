@@ -87,20 +87,19 @@ public class BookController {
         return ResponseEntity.ok(createdBook);
     }
 
-    //Requires the whole Book entity to be sent in order to verify it
+    // Requires the whole Book entity to be sent in order to verify it
     @PutMapping("/updateTitle/{isdn}/{newTitle}")
     @PreAuthorize("hasRole('ADMIN')")
-    public BookDTO updateBookTitle(@PathVariable("isdn") String isdn, @PathVariable("newTitle") String newTitle,
-            @RequestBody @Valid Book book) {
-        return bookService.updateBookTitle(isdn, newTitle, book);
+    public BookDTO updateBookTitle(@PathVariable("isdn") String isdn, @PathVariable("newTitle") String newTitle) {
+        return bookService.updateBookTitle(isdn, newTitle);
     }
 
-    //Requires the whole Book entity to be sent in order to verify it
+    // Requires the whole Book entity to be sent in order to verify it
     @PutMapping("updateAuthor/{isdn}/{newAuthorId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public BookDTO updateBookAuthor(@PathVariable("isdn") String isdn, @PathVariable("newAuthorId") Integer newAuthorId,
-            @RequestBody @Valid Book book) {
-        return bookService.updateBookAuthor(isdn, newAuthorId, book);
+    public BookDTO updateBookAuthor(@PathVariable("isdn") String isdn,
+            @PathVariable("newAuthorId") Integer newAuthorId) {
+        return bookService.updateBookAuthor(isdn, newAuthorId);
     }
 
     @PutMapping("/addBookGenre/{isdn}/{newBookGenre}")
@@ -112,7 +111,8 @@ public class BookController {
 
     @PutMapping("/removeBookGenre/{isdn}/{removedBookGenre}")
     @PreAuthorize("hasRole('ADMIN')")
-    public BookDTO removeBookGenre(@PathVariable("isdn") String isdn, @PathVariable("removedBookGenre") BookGenre removedBookGenre,
+    public BookDTO removeBookGenre(@PathVariable("isdn") String isdn,
+            @PathVariable("removedBookGenre") BookGenre removedBookGenre,
             @RequestBody @Valid Book book) {
         return bookService.removeBookGenre(isdn, removedBookGenre, book);
     }

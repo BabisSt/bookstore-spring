@@ -1,7 +1,7 @@
 -- Insert Authors First
-INSERT INTO author (id, first_name, last_name, about_section) VALUES (1, 'George', 'Orwell', 'British writer');
-INSERT INTO author (id, first_name, last_name, about_section) VALUES (2, 'Aldous', 'Huxley', 'English writer and philosopher');
-INSERT INTO author (id, first_name, last_name, about_section) VALUES (3, 'Ray', 'Bradbury', 'American author known for Fahrenheit 451');
+INSERT INTO author (id, first_name, last_name, about_section) VALUES ('George', 'Orwell', 'British writer');
+INSERT INTO author (id, first_name, last_name, about_section) VALUES ('Aldous', 'Huxley', 'English writer and philosopher');
+INSERT INTO author (id, first_name, last_name, about_section) VALUES ('Ray', 'Bradbury', 'American author known for Fahrenheit 451');
 
 -- Insert Books with FK references to author.id
 INSERT INTO books (isdn, title, content, author_id, release_date) VALUES ('9783161484100', '1984', 'Dystopian novel', 1, '1949-06-08');
@@ -33,8 +33,8 @@ INSERT INTO orders (user_id) VALUES (3);
 -- For `order_books`, use the actual order IDs from above
 -- Assume generated IDs are 1, 2, 3 for orders
 
-INSERT INTO order_books (order_id, book_isdn, amount) VALUES (1, '9783161484100', 1); 
-INSERT INTO order_books (order_id, book_isdn, amount) VALUES (1, '0306406152', 2);    
-INSERT INTO order_books (order_id, book_isdn, amount) VALUES (2, '0306406152', 5);    
-INSERT INTO order_books (order_id, book_isdn, amount) VALUES (3, '9780131103627', 8); 
+INSERT INTO order_books (order_id, book_isdn, amount) VALUES ('9783161484100', 1); 
+INSERT INTO order_books (order_id, book_isdn, amount) VALUES ('0306406152', 2);    
+INSERT INTO order_books (order_id, book_isdn, amount) VALUES ('0306406152', 5);    
+INSERT INTO order_books (order_id, book_isdn, amount) VALUES ('9780131103627', 8); 
 

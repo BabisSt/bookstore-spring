@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.endpoint.endpoint.model.Author;
 import com.endpoint.endpoint.repositories.AuthorRepository;
 
-
 @Service
 public class AuthorService {
 
@@ -29,17 +28,18 @@ public class AuthorService {
     }
 
     public Author createAuthor(Author newAuthor) {
-        // if author exists then link it with the new book
-        Optional<Author> existingAuthor = authorRepository.findById(newAuthor.getId());
-        if (existingAuthor.isPresent()) {
-            throw new IllegalArgumentException("This author already exists");
-        }       
-
+        if (newAuthor.getId() != null) {
+            Optional<Author> existingAuthor = authorRepository.findById(newAuthor.getId());
+            if (existingAuthor.isPresent()) {
+                throw new IllegalArgumentException("This author already exists");
+            }
+        }
+        newAuthor.setId(null);
         return authorRepository.save(newAuthor);
     }
 
     public Author updateAuthorAboutSection(Integer id, String newAboutSection, Author author) {
-       if (authorRepository.existsById(id)) {
+        if (authorRepository.existsById(id)) {
             author.setAboutSection(newAboutSection);
             return authorRepository.save(author);
         }

@@ -1,8 +1,14 @@
 package com.endpoint.endpoint.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class BookReviewDTO {
     private Integer stars;
+
+    @JsonProperty("user")
     private UserDTO userDTO;
+
+    @JsonProperty("book")
     private BookDTO bookDTO;
 
     public BookReviewDTO() {

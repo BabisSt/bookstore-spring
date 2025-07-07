@@ -7,12 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.endpoint.endpoint.model.BookReviews;
 import com.endpoint.endpoint.model.User;
-import com.endpoint.endpoint.dto.BookDTO;
 import com.endpoint.endpoint.dto.BookReviewDTO;
-import com.endpoint.endpoint.dto.UserDTO;
-import com.endpoint.endpoint.mapper.BookMapper;
 import com.endpoint.endpoint.mapper.BookReviewMapper;
-import com.endpoint.endpoint.mapper.UserMapper;
 import com.endpoint.endpoint.model.Book;
 import com.endpoint.endpoint.repositories.BookRepository;
 import com.endpoint.endpoint.repositories.BookReviewsRepository;
@@ -63,20 +59,21 @@ public class BookReviewsService {
     public BookReviewDTO createBookReview(BookReviewDTO bookReviewDTO) {
         User user = userRepository.findById(bookReviewDTO.getUserDTO().getId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        UserDTO userDTO = UserMapper.toDTO(user);
 
         Book book = bookRepository.findById(bookReviewDTO.getBookDTO().getIsdn())
                 .orElseThrow(() -> new RuntimeException("Book not found"));
 
-        BookDTO bookDTO = BookMapper.toDTO(book);
         BookReviews existingReview = bookReviewsRepository.findByUserAndBook(user, book);
         if (existingReview != null) {
             throw new RuntimeException("This user has already reviewed this book.");
         }
 
-        bookReviewDTO.setUserDTO(userDTO);
-        bookReviewDTO.setBookDTO(bookDTO);
-        bookReviewsRepository.save(BookReviewMapper.toEntity(bookReviewDTO));
+        BookReviews bookReviewEntity = BookReviewMapper.toEntity(bookReviewDTO);
+        bookReviewEntity.setUser(user); // persistent User from DB
+        bookReviewEntity.setBook(book); // persistent Book from DB
+
+        bookReviewsRepository.save(bookReviewEntity);
+
         return bookReviewDTO;
     }
 
