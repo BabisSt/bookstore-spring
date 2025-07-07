@@ -8,13 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.endpoint.endpoint.dto.OrderDTO;
-import com.endpoint.endpoint.dto.UserDTO;
-
 import com.endpoint.endpoint.mapper.OrderMapper;
-import com.endpoint.endpoint.mapper.UserMapper;
 import com.endpoint.endpoint.model.Book;
 import com.endpoint.endpoint.model.BookAmountPair;
-
 import com.endpoint.endpoint.model.Order;
 import com.endpoint.endpoint.model.User;
 import com.endpoint.endpoint.repositories.BookRepository;
@@ -66,19 +62,28 @@ public class OrderService {
     public OrderDTO createOrder(OrderDTO orderDTO) {
         User user = userRepository.findById(orderDTO.getUser().getId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        UserDTO userDTO = UserMapper.toDTO(user);
+
+        Order orderEntity = OrderMapper.toEntity(orderDTO);
+        orderEntity.setUser(user);
+
         List<BookAmountPair> checkedBooks = orderDTO.getBooks().stream()
                 .map(pair -> {
-                    Book freshBook = bookRepository.findById(pair.getBook().getIsdn())
-                            .orElseThrow(() -> new RuntimeException("Book not found: " + pair.getBook().getIsdn()));
-                    pair.setBook(freshBook); // update the book inside the pair
+                    String isdn = pair.getBook() != null ? pair.getBook().getIsdn() : null;
+                    if (isdn == null) {
+                        throw new RuntimeException("Book ISBN (isdn) cannot be null");
+                    }
+
+                    Book freshBook = bookRepository.findById(isdn)
+                            .orElseThrow(() -> new RuntimeException("Book not found: " + isdn));
+
+                    pair.setBook(freshBook);
+                    pair.setOrder(orderEntity); // to avoid null order_id
                     return pair;
                 })
                 .collect(Collectors.toList());
 
-        orderDTO.setUser(userDTO);
-        orderDTO.setBooks(checkedBooks);
-        orderRepository.save(OrderMapper.toEntity(orderDTO));
+        orderEntity.setBooks(checkedBooks);
+        orderRepository.save(orderEntity);
 
         return orderDTO;
     }

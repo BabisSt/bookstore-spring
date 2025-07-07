@@ -96,8 +96,9 @@ public class BookService {
     }
 
     // Requires the whole Book entity to be sent in order to verify it
-    public BookDTO updateBookTitle(String isdn, String newTitle, Book book) {
+    public BookDTO updateBookTitle(String isdn, String newTitle) {
         if (bookRepository.existsById(isdn)) {
+            Book book = bookRepository.findByIsdn(isdn);
             book.setTitle(newTitle);
             Book savedBook = bookRepository.save(book);
             return BookMapper.toDTO(savedBook);
@@ -106,12 +107,13 @@ public class BookService {
     }
 
     // Requires the whole Book entity to be sent in order to verify it
-    public BookDTO updateBookAuthor(String isdn, Integer newAuthorId, Book book) {
+    public BookDTO updateBookAuthor(String isdn, Integer newAuthorId) {
         if (bookRepository.existsById(isdn)) {
             // if author exists then link it with the book
             Author author = authorRepository.findById(newAuthorId)
                     .orElseThrow(
                             () -> new EntityNotFoundException("Author not found with id: " + newAuthorId));
+            Book book = bookRepository.findByIsdn(isdn);
             book.setAuthor(author);
             Book savedBook = bookRepository.save(book);
             return BookMapper.toDTO(savedBook);
@@ -123,8 +125,8 @@ public class BookService {
     public BookDTO addBookGenre(String isdn, BookGenre newBookGenre, Book book) {
         if (bookRepository.existsById(isdn)) {
             // if genre exists then link it with the book
-            for (BookGenre bookGenre : BookGenre.values()){
-                if(bookGenre.name().equalsIgnoreCase(newBookGenre.toString())){
+            for (BookGenre bookGenre : BookGenre.values()) {
+                if (bookGenre.name().equalsIgnoreCase(newBookGenre.toString())) {
                     book.addBookGenre(newBookGenre);
                     Book savedBook = bookRepository.save(book);
                     return BookMapper.toDTO(savedBook);
@@ -136,8 +138,8 @@ public class BookService {
 
     public BookDTO removeBookGenre(String isdn, BookGenre deletingBookGenre, Book book) {
         if (bookRepository.existsById(isdn)) {
-            for (BookGenre bookGenre : BookGenre.values()){
-                if(bookGenre.name().equalsIgnoreCase(deletingBookGenre.toString())){
+            for (BookGenre bookGenre : BookGenre.values()) {
+                if (bookGenre.name().equalsIgnoreCase(deletingBookGenre.toString())) {
                     book.removeBookGenre(deletingBookGenre);
                     Book savedBook = bookRepository.save(book);
                     return BookMapper.toDTO(savedBook);
@@ -156,5 +158,5 @@ public class BookService {
         }
         return false;
     }
-    
+
 }
