@@ -10,12 +10,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-
-import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "orders")
@@ -41,7 +37,7 @@ public class Order extends BaseEntity {
         return this.userId;
     }
 
-    public void setUser(Integer userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 

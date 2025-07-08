@@ -43,99 +43,99 @@ public class OrderService {
         return ordersDTO;
     }
 
-    // public List<OrderDTO> getOrdersByUser(Integer userId) {
-    //     User user = userRepository.findById(userId)
-    //             .orElseThrow(() -> new RuntimeException("User not found"));
-    //     List<Order> orders = orderRepository.findByUser(user);
-    //     List<OrderDTO> ordersDTO = orders.stream()
-    //             .map(o -> OrderMapper.toDTO(o))
-    //             .collect(Collectors.toList());
-    //     return ordersDTO;
-    // }
+    public List<OrderDTO> getOrdersByUser(Integer userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        List<Order> orders = orderRepository.findByUserId(userId);
+        List<OrderDTO> ordersDTO = orders.stream()
+                .map(o -> OrderMapper.toDTO(o))
+                .collect(Collectors.toList());
+        return ordersDTO;
+    }
 
-    // public OrderDTO getOrderById(Integer id) {
-    //     Order order = orderRepository.findById(id).orElseThrow(() -> new RuntimeException("Order not found"));
+    public OrderDTO getOrderById(Integer id) {
+        Order order = orderRepository.findById(id).orElseThrow(() -> new RuntimeException("Order not found"));
 
-    //     return OrderMapper.toDTO(order);
-    // }
+        return OrderMapper.toDTO(order);
+    }
 
-    // public OrderDTO createOrder(OrderDTO orderDTO) {
-    //     User user = userRepository.findById(orderDTO.getUser().getId())
-    //             .orElseThrow(() -> new RuntimeException("User not found"));
+    public OrderDTO createOrder(OrderDTO orderDTO) {
+        User user = userRepository.findById(orderDTO.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-    //     Order orderEntity = OrderMapper.toEntity(orderDTO);
-    //     orderEntity.setUser(user);
+        Order orderEntity = OrderMapper.toEntity(orderDTO);
+        orderEntity.setUserId(user.getId());
 
-    //     List<BookAmountPair> checkedBooks = orderDTO.getBooks().stream()
-    //             .map(pair -> {
-    //                 String isdn = pair.getBook() != null ? pair.getBook().getIsdn() : null;
-    //                 if (isdn == null) {
-    //                     throw new RuntimeException("Book ISBN (isdn) cannot be null");
-    //                 }
+        List<BookAmountPair> checkedBooks = orderDTO.getBooks().stream()
+                .map(pair -> {
+                    String isdn = pair.getBook() != null ? pair.getBook().getIsdn() : null;
+                    if (isdn == null) {
+                        throw new RuntimeException("Book ISBN (isdn) cannot be null");
+                    }
 
-    //                 Book freshBook = bookRepository.findById(isdn)
-    //                         .orElseThrow(() -> new RuntimeException("Book not found: " + isdn));
+                    Book freshBook = bookRepository.findById(isdn)
+                            .orElseThrow(() -> new RuntimeException("Book not found: " + isdn));
 
-    //                 pair.setBook(freshBook);
-    //                 pair.setOrder(orderEntity); // to avoid null order_id
-    //                 return pair;
-    //             })
-    //             .collect(Collectors.toList());
+                    pair.setBook(freshBook);
+                    pair.setOrder(orderEntity); // to avoid null order_id
+                    return pair;
+                })
+                .collect(Collectors.toList());
 
-    //     orderEntity.setBooks(checkedBooks);
-    //     orderRepository.save(orderEntity);
+        orderEntity.setBooks(checkedBooks);
+        orderRepository.save(orderEntity);
 
-    //     return orderDTO;
-    // }
+        return orderDTO;
+    }
 
-    // public OrderDTO updateOrderInsertBook(Integer id, Integer amount, String isdn) {
-    //     if (orderRepository.existsById(id)) {
+    public OrderDTO updateOrderInsertBook(Integer id, Integer amount, String isdn) {
+        if (orderRepository.existsById(id)) {
 
-    //         // Add the new book after checking it exists
-    //         Book newBook = bookRepository.findByIsdn(isdn);
-    //         Order order = orderRepository.findById(id)
-    //                 .orElseThrow(() -> new RuntimeException("Order not found"));
+            // Add the new book after checking it exists
+            Book newBook = bookRepository.findByIsdn(isdn);
+            Order order = orderRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Order not found"));
 
-    //         // go to the order and add the new pair
-    //         order.getBooks().add(new BookAmountPair(order, newBook, amount));
-    //         return OrderMapper.toDTO(order);
-    //     }
-    //     return null;
-    // }
+            // go to the order and add the new pair
+            order.getBooks().add(new BookAmountPair(order, newBook, amount));
+            return OrderMapper.toDTO(order);
+        }
+        return null;
+    }
 
-    // public OrderDTO updateOrderChangeAmount(Integer id, Integer amount, String isdn) {
-    //     if (!orderRepository.existsById(id)) {
-    //         return null; // order does not exist
-    //     }
-    //     Order order = orderRepository.findById(id)
-    //             .orElseThrow(() -> new RuntimeException("Order not found"));
-    //     // Check if the book with the given isdn exists in the order
-    //     boolean bookFound = order.getBooks().stream()
-    //             .anyMatch(pair -> pair.getBook().getIsdn().equalsIgnoreCase(isdn));
+    public OrderDTO updateOrderChangeAmount(Integer id, Integer amount, String isdn) {
+        if (!orderRepository.existsById(id)) {
+            return null; // order does not exist
+        }
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+        // Check if the book with the given isdn exists in the order
+        boolean bookFound = order.getBooks().stream()
+                .anyMatch(pair -> pair.getBook().getIsdn().equalsIgnoreCase(isdn));
 
-    //     if (!bookFound) {
-    //         throw new RuntimeException("Book with ISDN " + isdn + " not found in the order");
-    //     }
-    //     // find the pair and change the amount
-    //     for (int i = 0; i < order.getBooks().size(); i++) {
-    //         if (order.getBooks().get(i).getBook().getIsdn().equalsIgnoreCase(isdn)) {
-    //             order.getBooks().get(i).setAmount(amount);
-    //             break;
-    //         }
+        if (!bookFound) {
+            throw new RuntimeException("Book with ISDN " + isdn + " not found in the order");
+        }
+        // find the pair and change the amount
+        for (int i = 0; i < order.getBooks().size(); i++) {
+            if (order.getBooks().get(i).getBook().getIsdn().equalsIgnoreCase(isdn)) {
+                order.getBooks().get(i).setAmount(amount);
+                break;
+            }
 
-    //     }
-    //     orderRepository.save(order);
-    //     return OrderMapper.toDTO(order);
-    // }
+        }
+        orderRepository.save(order);
+        return OrderMapper.toDTO(order);
+    }
 
-    // @Transactional // Without the @Transactional annotation, JPA doesn’t open a transaction and
-    //                // therefore cannot perform write operations like remove() or delete.
-    // public boolean deleteOrder(Integer id) {
-    //     if (orderRepository.existsById(id)) {
-    //         orderRepository.deleteById(id);
-    //         return true;
-    //     }
-    //     return false;
-    // }
+    @Transactional // Without the @Transactional annotation, JPA doesn’t open a transaction and
+    // therefore cannot perform write operations like remove() or delete.
+    public boolean deleteOrder(Integer id) {
+        if (orderRepository.existsById(id)) {
+            orderRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
 
 }

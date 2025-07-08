@@ -3,6 +3,7 @@ package com.endpoint.endpoint.model;
 import org.springframework.core.style.ToStringCreator;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,6 +23,7 @@ public class BookAmountPair extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "book_isdn")
+    @JsonIgnoreProperties(value = { "author", "bookReviews" })
     private Book book;
 
     @Column(name = "amount")
