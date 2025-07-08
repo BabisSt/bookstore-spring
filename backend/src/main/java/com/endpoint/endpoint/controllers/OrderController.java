@@ -35,48 +35,48 @@ public class OrderController {
         return orderService.getAllOrders();
     }
 
-    @GetMapping("/{id}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public OrderDTO getOrderById(@PathVariable Integer id) {
-        return orderService.getOrderById(id);
-    }
+    // @GetMapping("/{id}")
+    // @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    // public OrderDTO getOrderById(@PathVariable Integer id) {
+    //     return orderService.getOrderById(id);
+    // }
 
-    @GetMapping("/user/{user_id}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public List<OrderDTO> getOrderByUser(@PathVariable Integer user_id) {
-        return orderService.getOrdersByUser(user_id);
-    }
+    // @GetMapping("/user/{user_id}")
+    // @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    // public List<OrderDTO> getOrderByUser(@PathVariable Integer user_id) {
+    //     return orderService.getOrdersByUser(user_id);
+    // }
 
-    @PostMapping
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> createOrder(@RequestBody @Valid OrderDTO orderDTO, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            bindingResult.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
-            return ResponseEntity.badRequest().body(errors);
-        }
+    // @PostMapping
+    // @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    // public ResponseEntity<?> createOrder(@RequestBody @Valid OrderDTO orderDTO, BindingResult bindingResult) {
+    //     if (bindingResult.hasErrors()) {
+    //         Map<String, String> errors = new HashMap<>();
+    //         bindingResult.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+    //         return ResponseEntity.badRequest().body(errors);
+    //     }
 
-        OrderDTO createdOrder = orderService.createOrder(orderDTO);
-        return ResponseEntity.ok(createdOrder);
-    }
+    //     OrderDTO createdOrder = orderService.createOrder(orderDTO);
+    //     return ResponseEntity.ok(createdOrder);
+    // }
 
-    @PutMapping("/insert/{id}/{isdn}/{amount}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public OrderDTO updateOrderInsertBook(@PathVariable("id") Integer id,
-            @PathVariable("amount") Integer amount, @PathVariable("isdn") String isdn) {
-        return orderService.updateOrderInsertBook(id, amount, isdn);
-    }
+    // @PutMapping("/insert/{id}/{isdn}/{amount}")
+    // @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    // public OrderDTO updateOrderInsertBook(@PathVariable("id") Integer id,
+    //         @PathVariable("amount") Integer amount, @PathVariable("isdn") String isdn) {
+    //     return orderService.updateOrderInsertBook(id, amount, isdn);
+    // }
 
-    @PutMapping("/updateAmount/{id}/{isdn}/{amount}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public OrderDTO updateOrderChangeAmount(@PathVariable("id") Integer id,
-            @PathVariable("amount") Integer amount, @PathVariable("isdn") String isdn) {
-        return orderService.updateOrderChangeAmount(id, amount, isdn);
-    }
+    // @PutMapping("/updateAmount/{id}/{isdn}/{amount}")
+    // @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    // public OrderDTO updateOrderChangeAmount(@PathVariable("id") Integer id,
+    //         @PathVariable("amount") Integer amount, @PathVariable("isdn") String isdn) {
+    //     return orderService.updateOrderChangeAmount(id, amount, isdn);
+    // }
 
-    @DeleteMapping("/deleteOrder/{id}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public boolean deleteOrder(@PathVariable Integer id) {
-        return orderService.deleteOrder(id);
-    }
+    // @DeleteMapping("/deleteOrder/{id}")
+    // @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    // public boolean deleteOrder(@PathVariable Integer id) {
+    //     return orderService.deleteOrder(id);
+    // }
 }

@@ -13,7 +13,7 @@ import io.micrometer.common.lang.NonNull;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Integer> {
 
-    List<Order> findByUser(@NonNull User user);
+    List<Order> findByUserId(@NonNull Integer userId);
 
     void deleteByUserId(@NonNull Integer userId);
 
