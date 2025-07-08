@@ -10,7 +10,7 @@ public class OrderMapper {
             return null;
         }
 
-        return new OrderDTO(UserMapper.toDTO(order.getUser()), order.getBooks());
+        return new OrderDTO(order.getUserId(), order.getBooks());
     }
 
     public static Order toEntity(OrderDTO orderDTO) {
@@ -18,6 +18,6 @@ public class OrderMapper {
             return null;
         }
 
-        return new Order(UserMapper.toEntity(orderDTO.getUser()), orderDTO.getBooks());
+        return new Order(orderDTO.getUserId(), orderDTO.getBooks());
     }
 }

@@ -5,23 +5,23 @@ import java.util.List;
 import com.endpoint.endpoint.model.BookAmountPair;
 
 public class OrderDTO {
-    private UserDTO user;
+    private Integer userId;
     private List<BookAmountPair> books;
 
     public OrderDTO() {
     }
 
-    public OrderDTO(UserDTO user, List<BookAmountPair> books) {
-        this.user = user;
+    public OrderDTO(Integer userId, List<BookAmountPair> books) {
+        this.userId = userId;
         this.books = books;
     }
 
-    public UserDTO getUser() {
-        return user;
+    public Integer getUserId() {
+        return this.userId;
     }
 
-    public void setUser(UserDTO user) {
-        this.user = user;
+    public void setUser(Integer userId) {
+        this.userId = userId;
     }
 
     public List<BookAmountPair> getBooks() {
@@ -35,7 +35,7 @@ public class OrderDTO {
     @Override
     public String toString() {
         return "OrderDTO{" +
-                ", user=" + user +
+                ", user=" + userId +
                 ", books=" + books +
                 '}';
     }

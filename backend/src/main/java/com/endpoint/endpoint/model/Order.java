@@ -8,22 +8,17 @@ import org.springframework.core.style.ToStringCreator;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-
-import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "orders")
 public class Order extends BaseEntity {
 
-    @NotNull(message = "User must not be null")
-    @ManyToOne // Each Order Has One User
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
+    @Column(name = "user_id", nullable = false)
+    private Integer userId;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference // used to prevent infinite recursion when serializing parent-child
@@ -33,17 +28,17 @@ public class Order extends BaseEntity {
     public Order() {
     };
 
-    public Order(User user, List<BookAmountPair> books) {
-        this.user = user;
+    public Order(Integer userId, List<BookAmountPair> books) {
+        this.userId = userId;
         this.books = books;
     }
 
-    public User getUser() {
-        return this.user;
+    public Integer getUserId() {
+        return this.userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public List<BookAmountPair> getBooks() {
@@ -58,7 +53,7 @@ public class Order extends BaseEntity {
     public String toString() {
         return new ToStringCreator(this)
                 .append("id", super.getId())
-                .append("user", this.user.toString())
+                .append("user", this.userId.toString())
                 .append("book", this.books.toString()).toString();
     }
 

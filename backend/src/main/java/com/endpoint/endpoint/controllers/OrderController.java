@@ -49,10 +49,12 @@ public class OrderController {
 
     @PostMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> createOrder(@RequestBody @Valid OrderDTO orderDTO, BindingResult bindingResult) {
+    public ResponseEntity<?> createOrder(@RequestBody @Valid OrderDTO orderDTO,
+            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
-            bindingResult.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+            bindingResult.getFieldErrors().forEach(error -> errors.put(error.getField(),
+                    error.getDefaultMessage()));
             return ResponseEntity.badRequest().body(errors);
         }
 

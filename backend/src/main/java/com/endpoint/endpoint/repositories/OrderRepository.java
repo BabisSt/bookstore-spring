@@ -6,14 +6,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.endpoint.endpoint.model.Order;
-import com.endpoint.endpoint.model.User;
 
 import io.micrometer.common.lang.NonNull;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Integer> {
 
-    List<Order> findByUser(@NonNull User user);
+    List<Order> findByUserId(@NonNull Integer userId);
 
     void deleteByUserId(@NonNull Integer userId);
 

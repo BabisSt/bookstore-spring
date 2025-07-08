@@ -46,7 +46,7 @@ public class OrderService {
     public List<OrderDTO> getOrdersByUser(Integer userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        List<Order> orders = orderRepository.findByUser(user);
+        List<Order> orders = orderRepository.findByUserId(userId);
         List<OrderDTO> ordersDTO = orders.stream()
                 .map(o -> OrderMapper.toDTO(o))
                 .collect(Collectors.toList());
@@ -60,11 +60,11 @@ public class OrderService {
     }
 
     public OrderDTO createOrder(OrderDTO orderDTO) {
-        User user = userRepository.findById(orderDTO.getUser().getId())
+        User user = userRepository.findById(orderDTO.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Order orderEntity = OrderMapper.toEntity(orderDTO);
-        orderEntity.setUser(user);
+        orderEntity.setUserId(user.getId());
 
         List<BookAmountPair> checkedBooks = orderDTO.getBooks().stream()
                 .map(pair -> {
@@ -129,7 +129,7 @@ public class OrderService {
     }
 
     @Transactional // Without the @Transactional annotation, JPA doesn’t open a transaction and
-                   // therefore cannot perform write operations like remove() or delete.
+    // therefore cannot perform write operations like remove() or delete.
     public boolean deleteOrder(Integer id) {
         if (orderRepository.existsById(id)) {
             orderRepository.deleteById(id);
