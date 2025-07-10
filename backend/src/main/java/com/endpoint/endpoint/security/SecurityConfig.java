@@ -17,6 +17,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -24,33 +26,39 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity // enables @PreAuthorize for method level security
 public class SecurityConfig {
 
-    @Bean
-    public UserDetailsService users() {
-        UserDetails user = User.builder()
-                .username("user")
-                .password("{noop}password") // {noop} means no encoding, plain text password
-                .roles("USER")
-                .build();
+        @Bean
+        public UserDetailsService users() {
+                UserDetails user = User.builder()
+                                .username("user")
+                                .password("{noop}password") // {noop} means no encoding, plain text password
+                                .roles("USER")
+                                .build();
 
-        UserDetails admin = User.builder()
-                .username("admin")
-                .password("{noop}adminpass")
-                .roles("ADMIN")
-                .build();
+                UserDetails admin = User.builder()
+                                .username("admin")
+                                .password("{noop}adminpass")
+                                .roles("ADMIN")
+                                .build();
 
-        return new InMemoryUserDetailsManager(user, admin);
-    }
+                return new InMemoryUserDetailsManager(user, admin);
+        }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable() // Disable CSRF for simplicity, enable later in production
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/books/**").authenticated() // all book endpoints require auth
-                        .anyRequest().permitAll() // other endpoints are open
-                )
-                .httpBasic(); // use HTTP Basic Auth for simplicity (username/password in header)
+        @Bean
+        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+                http
+                                .csrf().disable() // Disable CSRF for simplicity, enable later in production
+                                .authorizeHttpRequests(authorize -> authorize
+                                                .requestMatchers("/api/books/**").authenticated() // all book endpoints
+                                                                                                  // require auth
+                                                .anyRequest().permitAll() // other endpoints are open
+                                )
+                                .httpBasic(); // use HTTP Basic Auth for simplicity (username/password in header)
 
-        return http.build();
-    }
+                return http.build();
+        }
+
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 }
