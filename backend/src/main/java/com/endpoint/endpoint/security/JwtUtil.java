@@ -24,7 +24,7 @@ public class JwtUtil {
     private String jwtSectet;
 
     @Value("${jwt.expiration}")
-    private String jwtExpiration;
+    private Long jwtExpiration;
 
     private SecretKey key;
 
@@ -37,8 +37,11 @@ public class JwtUtil {
     }
 
     public String generateToken(String email) {
-        return Jwts.builder().setSubject(email).setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtExpiration)).signWith(key, SignatureAlgorithm.HS256)
+        return Jwts.builder()
+                .setSubject(email)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 

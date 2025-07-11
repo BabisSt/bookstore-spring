@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +12,6 @@ import com.endpoint.endpoint.mapper.UserMapper;
 import com.endpoint.endpoint.model.User;
 import com.endpoint.endpoint.repositories.OrderRepository;
 import com.endpoint.endpoint.repositories.UserRepository;
-import com.endpoint.endpoint.security.SecurityConfig;
 
 import jakarta.transaction.Transactional;
 

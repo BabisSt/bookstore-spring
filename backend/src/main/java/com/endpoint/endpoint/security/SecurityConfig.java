@@ -10,10 +10,14 @@
 
 package com.endpoint.endpoint.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,38 +25,52 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.endpoint.endpoint.services.CustomUserDetailsService;
 
 @Configuration
 @EnableMethodSecurity // enables @PreAuthorize for method level security
 public class SecurityConfig {
+        @Autowired
+        private JwtAuthFilter jwtAuthFilter;
+        @Autowired
+        private CustomUserDetailsService customUserDetailsService;
 
-        @Bean
-        public UserDetailsService users() {
-                UserDetails user = User.builder()
-                                .username("user")
-                                .password("{noop}password") // {noop} means no encoding, plain text password
-                                .roles("USER")
-                                .build();
+        // @Bean
+        // public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        // http
+        // .csrf(csrf -> csrf
+        // .ignoringRequestMatchers("/h2-console/**") // disable CSRF for H2
+        // // console
+        // )
+        // .headers(headers -> headers
+        // .frameOptions(frameOptions -> frameOptions.sameOrigin()))
+        // .authorizeHttpRequests(authorize -> authorize
+        // .requestMatchers("/h2-console/**").permitAll() // allow H2 console
+        // // access without auth
+        // .requestMatchers("/api/auth/**").permitAll() // your existing permitAll
+        // // for auth
+        // .requestMatchers("/api/books/**").authenticated()
+        // .anyRequest().permitAll())
+        // .sessionManagement(session -> session
+        // .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        // .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
-                UserDetails admin = User.builder()
-                                .username("admin")
-                                .password("{noop}adminpass")
-                                .roles("ADMIN")
-                                .build();
-
-                return new InMemoryUserDetailsManager(user, admin);
-        }
+        // return http.build();
+        // }
 
         @Bean
         public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
                 http
-                                .csrf().disable() // Disable CSRF for simplicity, enable later in production
-                                .authorizeHttpRequests(authorize -> authorize
-                                                .requestMatchers("/api/books/**").authenticated() // all book endpoints
-                                                                                                  // require auth
-                                                .anyRequest().permitAll() // other endpoints are open
-                                )
-                                .httpBasic(); // use HTTP Basic Auth for simplicity (username/password in header)
+                                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**", "/api/auth/**"))
+                                .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()))
+                                .authorizeHttpRequests(auth -> auth
+                                                .requestMatchers("/h2-console/**", "/api/auth/**").permitAll()
+                                                .anyRequest().authenticated())
+                                .sessionManagement(session -> session
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
                 return http.build();
         }
@@ -61,4 +79,18 @@ public class SecurityConfig {
         public PasswordEncoder passwordEncoder() {
                 return new BCryptPasswordEncoder();
         }
+
+        /**
+         * Exposes the AuthenticationManager bean which is required for manual
+         * authentication
+         * (e.g., during login with username and password). It delegates authentication
+         * logic
+         * to the configured UserDetailsService and PasswordEncoder.
+         */
+
+        @Bean
+        public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+                return authConfig.getAuthenticationManager();
+        }
+
 }
