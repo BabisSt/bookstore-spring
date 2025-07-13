@@ -1,6 +1,7 @@
 package com.endpoint.endpoint.mapper;
 
 import com.endpoint.endpoint.dto.UserDTO;
+import com.endpoint.endpoint.enums.UserRoles;
 import com.endpoint.endpoint.model.User;
 
 public class UserMapper {
@@ -29,6 +30,6 @@ public class UserMapper {
         }
 
         return new User(userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(), null,
-                userDTO.getAboutSection(), userDTO.getBookReviews());
+                userDTO.getAboutSection(), userDTO.getBookReviews(), UserRoles.USER);
     }
 }

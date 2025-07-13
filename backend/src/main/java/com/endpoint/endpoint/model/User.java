@@ -4,8 +4,13 @@ import java.util.List;
 
 import org.springframework.core.style.ToStringCreator;
 
+import com.endpoint.endpoint.enums.UserRoles;
+
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
@@ -25,17 +30,22 @@ public class User extends Person {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BookReviews> bookReviews;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
+    private UserRoles role;
+
     public User() {
     };
 
     public User(String firstName, String lastName, String email, String password, String aboutSection,
-            List<BookReviews> bookReviews) {
+            List<BookReviews> bookReviews, UserRoles role) {
         super.setFirstName(firstName);
         super.setLastName(lastName);
         this.email = email;
         this.password = password;
         super.setAboutSection(aboutSection);
         this.bookReviews = bookReviews;
+        this.role = role;
     }
 
     public String getEmail() {
@@ -62,6 +72,14 @@ public class User extends Person {
         this.bookReviews = bookReviews;
     }
 
+    public UserRoles getUserRole() {
+        return this.role;
+    }
+
+    public void setUserRole(UserRoles role) {
+        this.role = role;
+    }
+
     @Override
     public String toString() {
         return new ToStringCreator(this)
@@ -70,6 +88,7 @@ public class User extends Person {
                 .append("lastName", super.getLastName())
                 .append("email", this.getEmail())
                 .append("password", this.getPassword())
-                .append("bookReviews", this.getBookReviews()).toString();
+                .append("bookReviews", this.getBookReviews())
+                .append("role", this.getUserRole()).toString();
     }
 }

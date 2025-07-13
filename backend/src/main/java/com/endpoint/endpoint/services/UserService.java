@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.endpoint.endpoint.dto.UserDTO;
@@ -22,6 +23,9 @@ public class UserService {
 
     @Autowired
     public UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     UserService(OrderRepository orderRepository, UserRepository userRepository) {
         this.orderRepository = orderRepository;
@@ -72,7 +76,8 @@ public class UserService {
         if (userRepository.findByEmail(user.getEmail()) != null) {
             throw new IllegalArgumentException("This user already exists");
         }
-
+        // Encrypt pass
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -86,7 +91,7 @@ public class UserService {
         if (!user.getPassword().equalsIgnoreCase(oldPassword))
             return null;
 
-        user.setPassword(newPassword);
+        user.setPassword(passwordEncoder.encode(newPassword));
         User updatedUser = userRepository.save(user); // Save the entity
         return UserMapper.toDTO(updatedUser); // Return a DTO
 
