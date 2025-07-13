@@ -17,10 +17,10 @@ INSERT INTO book_genres(book_isdn, book_genre) VALUES ('9783161484100', 'Adventu
 INSERT INTO book_genres(book_isdn, book_genre) VALUES ('0306406152', 'Adventure');
 INSERT INTO book_genres(book_isdn, book_genre) VALUES ('9780131103627', 'Mystery');
 
--- Insert Users -- store password as plain text for now
-INSERT INTO users (id,first_name, last_name, email, password,about_section) VALUES (1,'John', 'Doe', 'johnDoe@gmail.com', '$2a$12$c9jGoq8jyQ5Pta1wAM1.1.G/0oLELfTXBjmtOFbbAJYxiEhDp4D4G','British writer');
-INSERT INTO users (id,first_name, last_name, email, password,about_section) VALUES (2,'Maria', 'Smit', 'mariaS@yahoo.com','$2a$12$c9jGoq8jyQ5Pta1wAM1.1.G/0oLELfTXBjmtOFbbAJYxiEhDp4D4G','English writer and philosopher');
-INSERT INTO users (id,first_name, last_name, email, password,about_section) VALUES (3,'Luke', 'Arrow', 'look@windowslive.com', '$2a$12$c9jGoq8jyQ5Pta1wAM1.1.G/0oLELfTXBjmtOFbbAJYxiEhDp4D4G','American author known for Fahrenheit 451');
+-- Insert Users 
+INSERT INTO users (id,first_name, last_name, email, password,about_section,role) VALUES (1,'John', 'Doe', 'johnDoe@gmail.com', '$2a$12$c9jGoq8jyQ5Pta1wAM1.1.G/0oLELfTXBjmtOFbbAJYxiEhDp4D4G','British writer','ADMIN');
+INSERT INTO users (id,first_name, last_name, email, password,about_section,role) VALUES (2,'Maria', 'Smit', 'mariaS@yahoo.com','$2a$12$c9jGoq8jyQ5Pta1wAM1.1.G/0oLELfTXBjmtOFbbAJYxiEhDp4D4G','English writer and philosopher','USER');
+INSERT INTO users (id,first_name, last_name, email, password,about_section,role) VALUES (3,'Luke', 'Arrow', 'look@windowslive.com', '$2a$12$c9jGoq8jyQ5Pta1wAM1.1.G/0oLELfTXBjmtOFbbAJYxiEhDp4D4G','American author known for Fahrenheit 451','USER');
 
 -- Insert Book Reviews and make the connections
 INSERT INTO book_reviews (book_isdn, user_id, stars) VALUES ('9783161484100', 1, 1);
