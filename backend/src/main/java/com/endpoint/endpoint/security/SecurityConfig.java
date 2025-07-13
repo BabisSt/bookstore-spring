@@ -18,12 +18,8 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -36,29 +32,6 @@ public class SecurityConfig {
         private JwtAuthFilter jwtAuthFilter;
         @Autowired
         private CustomUserDetailsService customUserDetailsService;
-
-        // @Bean
-        // public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // http
-        // .csrf(csrf -> csrf
-        // .ignoringRequestMatchers("/h2-console/**") // disable CSRF for H2
-        // // console
-        // )
-        // .headers(headers -> headers
-        // .frameOptions(frameOptions -> frameOptions.sameOrigin()))
-        // .authorizeHttpRequests(authorize -> authorize
-        // .requestMatchers("/h2-console/**").permitAll() // allow H2 console
-        // // access without auth
-        // .requestMatchers("/api/auth/**").permitAll() // your existing permitAll
-        // // for auth
-        // .requestMatchers("/api/books/**").authenticated()
-        // .anyRequest().permitAll())
-        // .sessionManagement(session -> session
-        // .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        // .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-
-        // return http.build();
-        // }
 
         @Bean
         public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
