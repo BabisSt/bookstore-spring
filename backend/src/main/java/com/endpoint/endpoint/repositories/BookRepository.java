@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import com.endpoint.endpoint.model.Author;
@@ -18,7 +19,7 @@ import com.endpoint.endpoint.model.Book;
 import io.micrometer.common.lang.NonNull;
 
 @Repository
-public interface BookRepository extends JpaRepository<Book, String> {
+public interface BookRepository extends JpaRepository<Book, String>, JpaSpecificationExecutor<Book> {
 
     Optional<Book> findByTitle(@NonNull String title);
 

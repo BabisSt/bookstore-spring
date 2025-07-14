@@ -16,8 +16,10 @@
 
 package com.endpoint.endpoint.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import jakarta.persistence.criteria.Predicate;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +61,34 @@ public class BookService {
 
         return books.stream().map(b -> BookMapper.toDTO(b))
                 .collect(Collectors.toList());
+    }
+
+    public List<Book> searchBooks(String isdn, String title, String authorFirstName, String authorLastName,
+            BookGenre bookGenre) {
+        return bookRepository.findAll((root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (isdn != null) {
+                predicates.add(cb.equal(root.get("isdn"), isdn));
+            }
+            if (title != null) {
+                predicates.add(cb.equal(root.get("title"), title));
+            }
+            /* Match the author and then get the name */
+            if (authorFirstName != null) {
+                predicates.add(cb.equal(root.get("author").get("firstName"), authorFirstName));
+            }
+            /* Match the author and then get the name */
+            if (authorLastName != null) {
+                predicates.add(cb.equal(root.get("author").get("lastName"), authorLastName));
+            }
+            /* Match all the books with this Book Genre */
+            if (bookGenre != null) {
+                predicates.add(cb.isMember(bookGenre, root.get("bookGenre")));
+            }
+
+            return cb.and(predicates.toArray(new Predicate[0]));
+        });
     }
 
     public Optional<List<BookDTO>> getBookByAuthor(Author author) {
