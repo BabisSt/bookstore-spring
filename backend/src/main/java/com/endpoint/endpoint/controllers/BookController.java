@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.endpoint.endpoint.dto.BookDTO;
@@ -66,6 +67,17 @@ public class BookController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public Optional<BookDTO> getBookByTitle(@PathVariable String title) {
         return bookService.getBookByTitle(title);
+    }
+
+    @GetMapping("/search")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public List<Book> searchBooks(
+            @RequestParam(required = false) String isdn,
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String authorFirstName,
+            @RequestParam(required = false) String authorLastName,
+            @RequestParam(required = false) BookGenre bookGenre) {
+        return bookService.searchBooks(isdn, title, authorFirstName, authorLastName, bookGenre);
     }
 
     @GetMapping("/isdn/{isdn}")
