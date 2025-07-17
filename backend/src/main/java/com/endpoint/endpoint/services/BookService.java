@@ -125,11 +125,22 @@ public class BookService {
         return savedBook;
     }
 
-    // Requires the whole Book entity to be sent in order to verify it
+
     public BookDTO updateBookTitle(String isdn, String newTitle) {
         if (bookRepository.existsById(isdn)) {
             Book book = bookRepository.findByIsdn(isdn);
             book.setTitle(newTitle);
+            Book savedBook = bookRepository.save(book);
+            return BookMapper.toDTO(savedBook);
+        }
+        return null;
+    }
+
+
+    public BookDTO updateBookStock(String isdn, Integer newStock) {
+        if (bookRepository.existsById(isdn) && newStock > 0) {
+            Book book = bookRepository.findByIsdn(isdn);
+            book.setStock(newStock);
             Book savedBook = bookRepository.save(book);
             return BookMapper.toDTO(savedBook);
         }

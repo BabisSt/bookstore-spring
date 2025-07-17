@@ -24,7 +24,7 @@ public class BookMapper {
             return null;
 
         return new BookDTO(book.getIsdn(), book.getTitle(), book.getAuthor(), book.getBookGenre(),
-                book.getBookReviews());
+                book.getBookReviews(),book.getStock());
     }
 
     public static Optional<BookDTO> OptionaltoDTO(Optional<Book> book) {
@@ -32,7 +32,7 @@ public class BookMapper {
             return null;
 
         Book b = book.get();
-        return Optional.of(new BookDTO(b.getIsdn(), b.getTitle(), b.getAuthor(), b.getBookGenre(), b.getBookReviews()));
+        return Optional.of(new BookDTO(b.getIsdn(), b.getTitle(), b.getAuthor(), b.getBookGenre(), b.getBookReviews(),b.getStock()));
     }
 
     public static Book toEntity(BookDTO bookDTO) {
@@ -48,6 +48,7 @@ public class BookMapper {
         book.setReleaseDate(new Date());
         book.setBookGenre(bookDTO.getBookGenre());
         book.setBookReviews(bookDTO.getBookReviews());
+        book.setStock(bookDTO.getStock());
         return book;
     }
 
