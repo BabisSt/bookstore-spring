@@ -12,6 +12,8 @@ import org.springframework.security.core.Authentication;
 
 import com.endpoint.endpoint.dto.JwtResponse;
 import com.endpoint.endpoint.dto.LoginRequest;
+import com.endpoint.endpoint.model.User;
+import com.endpoint.endpoint.repositories.UserRepository;
 import com.endpoint.endpoint.security.JwtUtil;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,21 +35,33 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private JwtUtil jwtUtil;
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
         try {
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getEmail(), 
+                            loginRequest.getPassword()
+                    )
+            );
 
-            String token = jwtUtil.generateToken(loginRequest.getEmail());
+            // Fetch the user to get the role
+            User user = userRepository.findByEmail(loginRequest.getEmail());
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
+            }
+
+            String token = jwtUtil.generateToken(user.getEmail(), user.getUserRole().name());
 
             return ResponseEntity.ok(new JwtResponse(token));
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
         }
-
     }
 
 }

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class BookReviewDTO {
     private Integer stars;
 
+    private String comment;
+
     @JsonProperty("user")
     private UserDTO userDTO;
 
@@ -14,8 +16,9 @@ public class BookReviewDTO {
     public BookReviewDTO() {
     }
 
-    public BookReviewDTO(Integer stars, UserDTO userDTO, BookDTO bookDTO) {
+    public BookReviewDTO(Integer stars,String comment, UserDTO userDTO, BookDTO bookDTO) {
         this.stars = stars;
+        this.comment = comment;
         this.userDTO = userDTO;
         this.bookDTO = bookDTO;
     }
@@ -28,6 +31,13 @@ public class BookReviewDTO {
         this.stars = stars;
     }
 
+    public String getComment() {
+        return this.comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
     public UserDTO getUserDTO() {
         return userDTO;
     }

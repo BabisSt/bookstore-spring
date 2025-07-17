@@ -12,6 +12,7 @@ public class BookReviewMapper {
 
         return new BookReviewDTO(
                 review.getStars(),
+                review.getComment(),
                 UserMapper.toDTO(review.getUser()),
                 BookMapper.toDTO(review.getBook()));
     }
@@ -23,6 +24,7 @@ public class BookReviewMapper {
 
         return new BookReviews(
                 bookReviewDTO.getStars(),
+                bookReviewDTO.getComment(),
                 UserMapper.toEntity(bookReviewDTO.getUserDTO()),
                 BookMapper.toEntity(bookReviewDTO.getBookDTO()));
     }

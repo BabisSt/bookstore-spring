@@ -12,6 +12,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "book_reviews")
@@ -22,6 +23,10 @@ public class BookReviews extends BaseEntity {
     @Max(value = 5, message = "Stars must be at most 5")
     @Column(name = "stars")
     private Integer stars;
+
+    @Size(min = 1, max = 500)
+    @Column(name = "comment")
+    private String comment;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -36,8 +41,9 @@ public class BookReviews extends BaseEntity {
     public BookReviews() {
     };
 
-    public BookReviews(Integer stars, User user, Book book) {
+    public BookReviews(Integer stars,String comment, User user, Book book) {
         this.stars = stars;
+        this.comment = comment;
         this.user = user;
         this.book = book;
     }
@@ -48,6 +54,14 @@ public class BookReviews extends BaseEntity {
 
     public void setStars(Integer stars) {
         this.stars = stars;
+    }
+
+    public String getComment() {
+        return this.comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public User getUser() {
@@ -71,7 +85,8 @@ public class BookReviews extends BaseEntity {
         return new ToStringCreator(this)
                 .append("book", this.getBook())
                 .append("user", this.getUser())
-                .append("stars", this.getStars()).toString();
+                .append("stars", this.getStars())
+                .append("comment", this.getComment()).toString();
     }
 
 }

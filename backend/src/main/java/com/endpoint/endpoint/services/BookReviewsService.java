@@ -88,6 +88,17 @@ public class BookReviewsService {
         return null;
     }
 
+    public BookReviewDTO updateCommentBookReview(Integer id, String comment) {
+        if (bookReviewsRepository.existsById(id)) {
+            BookReviews bookReview = bookReviewsRepository.findById(id).get();
+            bookReview.setComment(comment);
+            bookReviewsRepository.save(bookReview);
+
+            return BookReviewMapper.toDTO(bookReview);
+        }
+        return null;
+    }
+
     @Transactional
     public boolean deleteBookReview(Integer id) {
         if (bookReviewsRepository.existsById(id)) {

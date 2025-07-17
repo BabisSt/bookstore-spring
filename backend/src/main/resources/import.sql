@@ -23,10 +23,10 @@ INSERT INTO users (id,first_name, last_name, email, password,about_section,role)
 INSERT INTO users (id,first_name, last_name, email, password,about_section,role) VALUES (3,'Luke', 'Arrow', 'look@windowslive.com', '$2a$12$c9jGoq8jyQ5Pta1wAM1.1.G/0oLELfTXBjmtOFbbAJYxiEhDp4D4G','American author known for Fahrenheit 451','USER');
 
 -- Insert Book Reviews and make the connections
-INSERT INTO book_reviews (book_isdn, user_id, stars) VALUES ('9783161484100', 1, 1);
-INSERT INTO book_reviews (book_isdn, user_id, stars) VALUES ('9783161484100', 2, 3);
-INSERT INTO book_reviews (book_isdn, user_id, stars) VALUES ('0306406152', 1, 4);
-INSERT INTO book_reviews (book_isdn, user_id, stars) VALUES ('9780131103627', 3, 2);
+INSERT INTO book_reviews (book_isdn, user_id, stars,comment) VALUES ('9783161484100', 1, 1,'Nice!');
+INSERT INTO book_reviews (book_isdn, user_id, stars,comment) VALUES ('9783161484100', 2, 3,'Very good!');
+INSERT INTO book_reviews (book_isdn, user_id, stars,comment) VALUES ('0306406152', 1, 4,'Muy malo :(');
+INSERT INTO book_reviews (book_isdn, user_id, stars,comment) VALUES ('9780131103627', 3, 2,'Ok ok');
 
 -- Insert orders
 INSERT INTO orders (user_id) VALUES (1); -- assume ID = 1

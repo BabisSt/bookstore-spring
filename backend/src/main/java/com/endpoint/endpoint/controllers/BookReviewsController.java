@@ -67,6 +67,11 @@ public class BookReviewsController {
         return bookReviewsService.updateStarsBookReview(id, stars);
     }
 
+    @PutMapping("/updateComment/{id}/{comment}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public BookReviewDTO updateCommentBookReview(@PathVariable Integer id, @PathVariable String comment) {
+        return bookReviewsService.updateCommentBookReview(id, comment);
+    }
     @DeleteMapping("/deleteReview/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public boolean deleteBookReview(@PathVariable Integer id) {
