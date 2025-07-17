@@ -20,7 +20,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 @Entity
@@ -61,11 +64,17 @@ public class Book {
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BookReviews> bookReviews;
 
+    @NotNull(message = "Stock must not be null")
+    @Min(value = 0, message = "Stock must be at least 0")
+    @Max(value = 1000, message = "Stock must be at most 1000")
+    @Column(name = "stock")
+    private Integer stock;
+
     public Book() {
     };
 
     public Book(String isdn, String title, Author author, Date releaseDate, String content, Set<BookGenre> bookGenre,
-            List<BookReviews> bookReviews) {
+            List<BookReviews> bookReviews, Integer stock) {
         this.isdn = isdn;
         this.title = title;
         this.author = author;
@@ -73,6 +82,7 @@ public class Book {
         this.content = content;
         this.bookGenre = bookGenre;
         this.bookReviews = bookReviews;
+        this.stock = stock;
     }
 
     public String getIsdn() {
@@ -139,6 +149,14 @@ public class Book {
         this.bookReviews = bookReviews;
     }
 
+    public Integer getStock() {
+        return this.stock;
+    }
+
+    public void setStock(Integer stock) {
+        this.stock = stock;
+    }
+
     @Override
     public String toString() {
         return new ToStringCreator(this)
@@ -148,6 +166,7 @@ public class Book {
                 .append("releadeDate", this.getReleaseDate())
                 .append("content", this.getContent())
                 .append("bookGenre", this.getBookGenre())
-                .append("bookReviews", this.getBookReviews()).toString();
+                .append("bookReviews", this.getBookReviews())
+                .append("stock", this.getStock()).toString();
     }
 }

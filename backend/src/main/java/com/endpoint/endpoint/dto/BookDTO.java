@@ -40,16 +40,19 @@ public class BookDTO {
 
     private List<BookReviews> bookReviews;
 
+    private Integer stock;
+
     // Constructors
     public BookDTO() {
     }
 
-    public BookDTO(String isdn, String title, Author author, Set<BookGenre> bookGenre, List<BookReviews> bookReviews) {
+    public BookDTO(String isdn, String title, Author author, Set<BookGenre> bookGenre, List<BookReviews> bookReviews, Integer stock) {
         this.isdn = isdn;
         this.title = title;
         this.author = author;
         this.bookGenre = bookGenre;
         this.bookReviews = bookReviews;
+        this.stock = stock;
     }
 
     // Getters and setters
@@ -91,5 +94,13 @@ public class BookDTO {
 
     public void setBookReviews(List<BookReviews> bookReviews) {
         this.bookReviews = bookReviews;
+    }
+
+    public Integer getStock() {
+        return this.stock;
+    }
+
+    public void setStock(Integer stock) {
+        this.stock = stock;
     }
 }

@@ -99,14 +99,20 @@ public class BookController {
         return ResponseEntity.ok(createdBook);
     }
 
-    // Requires the whole Book entity to be sent in order to verify it
-    @PutMapping("/updateTitle/{isdn}/{newTitle}")
+    
+    @PutMapping("/updateStock/{isdn}/{newStock}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public BookDTO updateBookStock(@PathVariable("isdn") String isdn, @PathVariable("newStock") Integer newStock) {
+        return bookService.updateBookStock(isdn, newStock);
+    }
+
+
+    @PutMapping("/updateStock/{isdn}/{newTitle}")
     @PreAuthorize("hasRole('ADMIN')")
     public BookDTO updateBookTitle(@PathVariable("isdn") String isdn, @PathVariable("newTitle") String newTitle) {
         return bookService.updateBookTitle(isdn, newTitle);
     }
 
-    // Requires the whole Book entity to be sent in order to verify it
     @PutMapping("updateAuthor/{isdn}/{newAuthorId}")
     @PreAuthorize("hasRole('ADMIN')")
     public BookDTO updateBookAuthor(@PathVariable("isdn") String isdn,

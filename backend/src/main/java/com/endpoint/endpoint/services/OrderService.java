@@ -29,10 +29,14 @@ public class OrderService {
     @Autowired
     private final BookRepository bookRepository;
 
-    public OrderService(OrderRepository orderRepository, UserRepository userRepository, BookRepository bookRepository) {
+    @Autowired 
+    private final BookService bookService;
+
+    public OrderService(OrderRepository orderRepository, UserRepository userRepository, BookRepository bookRepository,BookService bookService) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.bookRepository = bookRepository;
+        this.bookService = bookService;
     }
 
     public List<OrderDTO> getAllOrders() {
@@ -59,6 +63,7 @@ public class OrderService {
         return OrderMapper.toDTO(order);
     }
 
+    @Transactional
     public OrderDTO createOrder(OrderDTO orderDTO) {
         User user = userRepository.findById(orderDTO.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -73,6 +78,13 @@ public class OrderService {
                         throw new RuntimeException("Book ISBN (isdn) cannot be null");
                     }
 
+                    Integer amount = pair.getAmount();
+                    Integer stock = pair.getBook().getStock();
+
+                    if(amount > stock){
+                       throw new RuntimeException("Book stock for ISDN : " + isdn + " is " + stock + " .Please change the requested amount"); 
+                    }
+                    bookService.updateBookStock(isdn, stock - amount);
                     Book freshBook = bookRepository.findById(isdn)
                             .orElseThrow(() -> new RuntimeException("Book not found: " + isdn));
 
@@ -88,6 +100,7 @@ public class OrderService {
         return orderDTO;
     }
 
+    @Transactional
     public OrderDTO updateOrderInsertBook(Integer id, Integer amount, String isdn) {
         if (orderRepository.existsById(id)) {
 
@@ -97,12 +110,19 @@ public class OrderService {
                     .orElseThrow(() -> new RuntimeException("Order not found"));
 
             // go to the order and add the new pair
+            Integer stock = newBook.getStock();
+
+            if(amount > stock){
+                throw new RuntimeException("Book stock for ISDN : " + isdn + " is " + stock + " .Please change the requested amount"); 
+            }
+            bookService.updateBookStock(isdn, stock - amount);
             order.getBooks().add(new BookAmountPair(order, newBook, amount));
             return OrderMapper.toDTO(order);
         }
         return null;
     }
 
+    @Transactional
     public OrderDTO updateOrderChangeAmount(Integer id, Integer amount, String isdn) {
         if (!orderRepository.existsById(id)) {
             return null; // order does not exist
@@ -119,6 +139,12 @@ public class OrderService {
         // find the pair and change the amount
         for (int i = 0; i < order.getBooks().size(); i++) {
             if (order.getBooks().get(i).getBook().getIsdn().equalsIgnoreCase(isdn)) {
+                Integer stock = order.getBooks().get(i).getBook().getStock(); 
+                if (amount > stock) {
+                    throw new RuntimeException("Book stock for ISDN: " + isdn + " is " + stock +
+                            ". Please change the requested amount.");
+                }
+                bookService.updateBookStock(isdn, stock - amount);
                 order.getBooks().get(i).setAmount(amount);
                 break;
             }
