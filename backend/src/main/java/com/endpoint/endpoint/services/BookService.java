@@ -22,7 +22,6 @@ import java.util.Optional;
 import jakarta.persistence.criteria.Predicate;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.endpoint.endpoint.dto.BookDTO;
@@ -38,16 +37,17 @@ import jakarta.transaction.Transactional;
 @Service
 public class BookService {
 
-    @Autowired
-    private BookRepository bookRepository;
-    @Autowired
-    private AuthorRepository authorRepository;
+    private final BookRepository bookRepository;
+    private final AuthorRepository authorRepository;
 
-    public BookService(BookRepository bookRepository) {
+    public BookService(BookRepository bookRepository, AuthorRepository authorRepository) {
         this.bookRepository = bookRepository;
+        this.authorRepository = authorRepository;
     }
 
     public BookService() {
+        this.bookRepository = null;
+        this.authorRepository = null;
     };
 
     /*
