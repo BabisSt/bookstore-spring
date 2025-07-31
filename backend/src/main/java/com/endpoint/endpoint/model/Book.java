@@ -1,6 +1,7 @@
 package com.endpoint.endpoint.model;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -59,7 +60,7 @@ public class Book {
     @CollectionTable(name = "book_genres", joinColumns = @JoinColumn(name = "book_isdn"))
     @Enumerated(EnumType.STRING)
     @Column(name = "book_genre")
-    private Set<BookGenre> bookGenre;
+    private Set<BookGenre> bookGenre = new HashSet<>();
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BookReviews> bookReviews;
